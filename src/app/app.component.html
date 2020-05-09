@@ -1,1 +1,16 @@
-<h1>{{title}}</h1>
+<h1>This is for {{title}}</h1>
+<hr>
+<div class='main-container'>
+	<!-- properting and event binding -->
+	<input type='text' (input)='onUpdateServerName($event)'>
+	<button [disabled]='!flipDisable' (click)='onUpdateTitle()'> Update title </button>
+	<!-- custom property binding from code -->
+	<app-server [serverName]='serverNames[0]'></app-server>
+	<!-- custom property binding in template -->
+	<app-server [serverName]="'server 2'"></app-server>
+	<!-- default property -->
+	<app-server></app-server>
+	<app-profile></app-profile>
+	<!-- <div app-profile></div> -->
+	<!-- <div class="app-profile"></div> -->
+</div>
