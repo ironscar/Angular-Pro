@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-root',
@@ -7,22 +8,17 @@ import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
-	title = 'angular-pro';
-	flipDisable = false;
-	serverNames = ['Server 1'];
+	title = 'Angular Pro';
+	type = 'Dev';
 
-	constructor(private cdr: ChangeDetectorRef) {
-		setTimeout(() => {
-			this.flipDisable = true;
-			this.cdr.detectChanges();
-		}, 2000);
-	}
+	constructor(private router: Router) {}
 
-	onUpdateServerName(ev: Event) {
-		this.serverNames[0] = (ev.target as HTMLInputElement).value;
-	}
-
-	onUpdateTitle() {
-		this.title = 'Angular Pro';
+	onLoadOtherType() {
+		if (this.type === 'Main') {
+			this.type = 'Dev';
+		} else {
+			this.type = 'Main';
+		}
+		this.router.navigate([this.type.toLowerCase()]);
 	}
 }

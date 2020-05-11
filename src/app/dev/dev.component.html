@@ -1,0 +1,26 @@
+<!-- dev stuff -->
+<div class='dev-container'>
+	<button [disabled]='!flipDisable' (click)='onUpdateProfileFlag()'> Update Profile Flag </button>
+	<div *ngIf='!profileFlag; else profile'>
+		<!-- two way binding with ng style -->
+		<label>Two-way binding</label>
+		<input [ngStyle]='{"border": "2px solid " + getColor(1)}' type='text' [(ngModel)]='serverNames[1]'>
+		<button (click)='onUpdateServerName($event, 1)'> Set Default Server 2 </button><br><br>
+		<!-- properting and event binding with ng class -->
+		<label>Property/Event binding</label>
+		<input [ngClass]='{"red-text": !isValidServerName(0), "green-text": isValidServerName(0)}' type='text'
+			(input)='onUpdateServerName($event)'><br><br>
+		<!-- custom property binding from code with ngFor -->
+		<button (click)='addServer()'> Add server </button>
+		<app-server *ngFor='let server of serverNames; let i = index' [serverName]='serverNames[i]'
+			[ngClass]='{"red-text": i >= 4 , "green-text": i < 4}'>
+		</app-server>
+		<!-- default property -->
+		<app-server></app-server>
+	</div>
+	<ng-template #profile>
+		<app-profile></app-profile>
+		<!-- <div app-profile></div> -->
+		<!-- <div class="app-profile"></div> -->
+	</ng-template>
+</div>
