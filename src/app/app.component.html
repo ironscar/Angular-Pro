@@ -1,3 +1,9 @@
 <h1 (click)='onLoadOtherType()'>This is for {{title}} ({{type}})</h1>
+<div fxLayoutAlign='end'>
+	<button mat-raised-button color='primary' (click)='toFlexLayoutAPI()'> Flex Layout API </button>
+	&nbsp;
+	<button mat-raised-button color='primary' (click)='toMaterialAPI()'> Material API </button>
+	&nbsp;
+</div>
 <hr>
 <router-outlet></router-outlet>

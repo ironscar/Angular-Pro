@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -7,18 +7,34 @@ import { Router } from '@angular/router';
 	styleUrls: ['./app.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+	private static DEV_TYPE = 'Dev';
+	private static MAIN_TYPE = 'Main';
 	title = 'Angular Pro';
-	type = 'Dev';
+	type = AppComponent.DEV_TYPE;
 
 	constructor(private router: Router) {}
 
+	ngOnInit() {
+		if (!window.location.href.endsWith(this.type)) {
+			this.onLoadOtherType();
+		}
+	}
+
 	onLoadOtherType() {
-		if (this.type === 'Main') {
-			this.type = 'Dev';
+		if (this.type === AppComponent.MAIN_TYPE) {
+			this.type = AppComponent.DEV_TYPE;
 		} else {
-			this.type = 'Main';
+			this.type = AppComponent.MAIN_TYPE;
 		}
 		this.router.navigate([this.type.toLowerCase()]);
+	}
+
+	toFlexLayoutAPI() {
+		window.open('https://tburleson-layouts-demos.firebaseapp.com/#/docs', '_blank');
+	}
+
+	toMaterialAPI() {
+		window.open('https://material.angular.io/components/categories', '_blank');
 	}
 }
