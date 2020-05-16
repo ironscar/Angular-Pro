@@ -1,1 +1,8 @@
 <h3>profile is {{profileName}} </h3>
+<!-- <input type='text' [(ngModel)]='profileName'><br><br> -->
+<input #profileInput type='text' [value]='profileName'><br><br>
+<!-- works like slot -->
+<ng-content select='[slot=mid]'></ng-content><br>
+<button (click)='updateProfileName()'> Update Profile </button><br>
+<ng-content select='[slot=end]'></ng-content>
+<hr>

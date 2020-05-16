@@ -14,11 +14,13 @@ import { ProfileComponent } from './dev/profile/profile.component';
 import { DevComponent } from './dev/dev.component';
 import { MainComponent } from './main/main.component';
 import { ShoppingListComponent } from './main/shopping-list/shopping-list.component';
-import { RecipeComponent } from './main/recipe/recipe.component';
 import { ShoppingListEditComponent } from './main/shopping-list/shopping-list-edit/shopping-list-edit.component';
-import { RecipeItemComponent } from './main/recipe/recipe-list/recipe-item/recipe-item.component';
-import { RecipeDetailComponent } from './main/recipe/recipe-detail/recipe-detail.component';
-import { RecipeListComponent } from './main/recipe/recipe-list/recipe-list.component';
+import { RecipeItemComponent } from './main/recipe-list/recipe-item/recipe-item.component';
+import { RecipeDetailComponent } from './main/recipe-list/recipe-detail/recipe-detail.component';
+import { RecipeListComponent } from './main/recipe-list/recipe-list.component';
+import { BasicHighLightDirective } from './dev/basic-highlight/basic-highlight.directive';
+import { UnlessDirective } from './dev/unless/unless.directive';
+import { DropdownDirective } from './main/shared/dropdown.directive';
 
 @NgModule({
 	declarations: [
@@ -28,11 +30,13 @@ import { RecipeListComponent } from './main/recipe/recipe-list/recipe-list.compo
 		DevComponent,
 		MainComponent,
 		ShoppingListComponent,
-		RecipeComponent,
 		ShoppingListEditComponent,
 		RecipeItemComponent,
 		RecipeDetailComponent,
-		RecipeListComponent
+		RecipeListComponent,
+		BasicHighLightDirective,
+		UnlessDirective,
+		DropdownDirective
 	],
 	imports: [
 		BrowserModule,

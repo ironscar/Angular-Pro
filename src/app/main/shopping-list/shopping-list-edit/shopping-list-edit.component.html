@@ -2,16 +2,16 @@
 	<mat-card-content>
 		<div fxLayout='row' fxLayoutAlign='start center'>
 			<div fxFlex='20'>
-				<label> Name <input type='text'> </label>
+				<label> Name <input #nameInput type='text' [(ngModel)]='currentIngredient.name'> </label>
 			</div>
 			<div fxFlex='20'>
-				<label> Quantity <input type='number'> </label>
+				<label> Quantity <input #qtyInput type='number' [(ngModel)]='currentIngredient.quantity'> </label>
 			</div>
 		</div>
 	</mat-card-content>
 	<mat-card-actions>
-		<button mat-raised-button color='primary'>Add</button>
-		<button mat-raised-button color='secondary'>Clear</button>
-		<button mat-raised-button color='warn'>Delete</button>
+		<button mat-raised-button color='primary' (click)='onAdd()'>Add</button>
+		<button mat-raised-button color='secondary' (click)='onClear()'>Clear</button>
+		<button mat-raised-button color='warn' (click)='onDelete()'>Delete</button>
 	</mat-card-actions>
 </mat-card>

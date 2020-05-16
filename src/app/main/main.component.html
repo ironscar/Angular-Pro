@@ -7,7 +7,7 @@
 		<mat-card-content>
 			<mat-tab-group>
 				<mat-tab label="Recipes">
-					<app-recipe></app-recipe>
+					<app-recipe-list></app-recipe-list>
 				</mat-tab>
 				<mat-tab label="Shopping List">
 					<app-shopping-list></app-shopping-list>
@@ -16,7 +16,15 @@
 		</mat-card-content>
 		<mat-card-actions>
 			<div fxLayoutAlign='end'>
-				<button mat-button color='secondary'> Manage </button>
+				<button mat-button color='secondary' (click)='changeDropdownMode()'> Manage </button>
+				<div class='dropdown' appDropdown [dropdownVisible]='dropdownOpen'
+					[dropdownCloseClass]='"dropdown-close"'>
+					<ul>
+						<li> Item 1 </li>
+						<li> Item 2 </li>
+						<li> Item 3 </li>
+					</ul>
+				</div>
 			</div>
 		</mat-card-actions>
 	</mat-card>

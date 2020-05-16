@@ -12,6 +12,7 @@
 			(input)='onUpdateServerName($event)'><br><br>
 		<!-- custom property binding from code with ngFor -->
 		<button (click)='addServer()'> Add server </button>
+		<!-- Input to server comp -->
 		<app-server *ngFor='let server of serverNames; let i = index' [serverName]='serverNames[i]'
 			[ngClass]='{"red-text": i >= 4 , "green-text": i < 4}'>
 		</app-server>
@@ -19,8 +20,28 @@
 		<app-server></app-server>
 	</div>
 	<ng-template #profile>
-		<app-profile></app-profile>
+		<app-profile [profileName]='profileName' (profileUpdate)='updateProfileName($event)'>
+			<!-- using slots -->
+			<span slot='mid' #mid> This is some slot content in the mid </span>
+			<span slot='end' #end> This is some slot content at the end </span>
+		</app-profile>
 		<!-- <div app-profile></div> -->
 		<!-- <div class="app-profile"></div> -->
+
+		<!-- Output from profile comp -->
+		<p> Profile name above is {{profileName}} </p>
 	</ng-template>
 </div>
+<hr>
+<!-- custom attribute and structural directive -->
+<p *appUnless='profileFlag' appBasicighlight [defaultColor]='"yellow"' [hoverColor]='"red"'> Styled with basic highlight
+	directive </p>
+<hr>
+<!-- ng switch directive -->
+<div [ngSwitch]='value'>
+	<p *ngSwitchCase='5'>5</p>
+	<p *ngSwitchCase='10'>10</p>
+	<p *ngSwitchCase='100'>100</p>
+	<p *ngSwitchDefault>default</p>
+</div>
+<hr>

@@ -11,6 +11,7 @@ export class MainComponent implements OnInit {
 	private static SHOPPING_LIST = 'Shopping-List';
 
 	appMode = MainComponent.RECIPE_BOOK;
+	dropdownOpen = false;
 
 	constructor() {}
 
@@ -22,5 +23,9 @@ export class MainComponent implements OnInit {
 		} else {
 			this.appMode = MainComponent.RECIPE_BOOK;
 		}
+	}
+
+	changeDropdownMode() {
+		this.dropdownOpen = !this.dropdownOpen;
 	}
 }

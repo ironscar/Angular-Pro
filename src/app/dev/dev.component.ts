@@ -8,8 +8,10 @@ import { Component, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/
 })
 export class DevComponent {
 	flipDisable = false;
+	profileName = 'Profile A';
 	profileFlag = false;
 	serverNames = ['Server 1', 'Server 2', 'Server 3'];
+	value = 10;
 
 	constructor(private cdr: ChangeDetectorRef) {
 		setTimeout(() => {
@@ -40,5 +42,9 @@ export class DevComponent {
 
 	onUpdateProfileFlag() {
 		this.profileFlag = !this.profileFlag;
+	}
+
+	updateProfileName(name: string) {
+		this.profileName = name;
 	}
 }

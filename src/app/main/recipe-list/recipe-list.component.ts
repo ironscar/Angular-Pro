@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Recipe } from '../recipe.model';
+import { Recipe } from './recipe.model';
 
 @Component({
 	selector: 'app-recipe-list',
@@ -12,8 +12,13 @@ export class RecipeListComponent implements OnInit {
 		new Recipe('Test recipe', 'this is a test recipe', 'https://randomimg.png'),
 		new Recipe('Test recipe 2', 'this is a test recipe 2', 'https://randomimg2.png')
 	];
+	selectedRecipe: Recipe = null;
 
 	constructor() {}
 
 	ngOnInit(): void {}
+
+	updateSelectedRecipe(recipe: Recipe) {
+		this.selectedRecipe = recipe;
+	}
 }

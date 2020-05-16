@@ -1,4 +1,5 @@
-<app-shopping-list-edit></app-shopping-list-edit>
+<app-shopping-list-edit (ingredientAdded)='onIngredientAdded($event)' (ingredientDeleted)='onIngredientDeleted($event)'>
+</app-shopping-list-edit>
 <h2>Shopping List</h2>
 <div *ngFor='let ingredient of ingredients'>
 	{{ingredient.name}} ({{ingredient.quantity}})

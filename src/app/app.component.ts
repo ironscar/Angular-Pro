@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
 	constructor(private router: Router) {}
 
 	ngOnInit() {
-		if (!window.location.href.endsWith(this.type)) {
+		if (!window.location.href.endsWith(this.type.toLowerCase())) {
 			this.onLoadOtherType();
 		}
 	}

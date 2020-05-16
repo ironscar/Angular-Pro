@@ -1,0 +1,10 @@
+<div fxLayout='row' fxLayoutAlign='space-between stretch'>
+	<div fxLayout='column' fxFlex='40' fxLayoutAlign='start'>
+		<h2>Recipe List</h2>
+		<app-recipe-item *ngFor='let item of recipes' [recipe]='item' (selectedRecipe)='updateSelectedRecipe($event)'>
+		</app-recipe-item>
+	</div>
+	<div fxLayout='column' fxFlex='50' fxLayoutAlign='start'>
+		<app-recipe-detail *ngIf='selectedRecipe' [recipe]='selectedRecipe'></app-recipe-detail>
+	</div>
+</div>
