@@ -1,0 +1,13 @@
+<br><br>
+<label>Name <input type='text' [(ngModel)]='name'></label>
+&nbsp;
+<label>Status
+	<select [(ngModel)]='status'>
+		<option value='Active'>Active</option>
+		<option value='Inactive'>Inactive</option>
+		<option value='Unknown'>Unknown</option>
+	</select>
+</label>
+<br><br>
+<button mat-raised-button (click)='onCreateAccount()'> Create account </button>
+<br><br>

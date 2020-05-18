@@ -18,9 +18,12 @@ import { ShoppingListEditComponent } from './main/shopping-list/shopping-list-ed
 import { RecipeItemComponent } from './main/recipe-list/recipe-item/recipe-item.component';
 import { RecipeDetailComponent } from './main/recipe-list/recipe-detail/recipe-detail.component';
 import { RecipeListComponent } from './main/recipe-list/recipe-list.component';
-import { BasicHighLightDirective } from './dev/basic-highlight/basic-highlight.directive';
-import { UnlessDirective } from './dev/unless/unless.directive';
-import { DropdownDirective } from './main/shared/dropdown.directive';
+import { BasicHighLightDirective } from './dev/directives/basic-highlight/basic-highlight.directive';
+import { UnlessDirective } from './dev/directives/unless/unless.directive';
+import { DropdownDirective } from './main/directives/dropdown.directive';
+import { AccountListComponent } from './dev/account-list/account-list.component';
+import { AccountComponent } from './dev/account-list/account/account.component';
+import { NewAccountComponent } from './dev/account-list/new-account/new-account.component';
 
 @NgModule({
 	declarations: [
@@ -36,7 +39,10 @@ import { DropdownDirective } from './main/shared/dropdown.directive';
 		RecipeListComponent,
 		BasicHighLightDirective,
 		UnlessDirective,
-		DropdownDirective
+		DropdownDirective,
+		AccountListComponent,
+		AccountComponent,
+		NewAccountComponent
 	],
 	imports: [
 		BrowserModule,
