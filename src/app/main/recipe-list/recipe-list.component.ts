@@ -1,24 +1,24 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Recipe } from './recipe.model';
+import { RecipeService } from '../services/recipe.service';
 
 @Component({
 	selector: 'app-recipe-list',
 	templateUrl: './recipe-list.component.html',
 	styleUrls: ['./recipe-list.component.scss'],
-	changeDetection: ChangeDetectionStrategy.OnPush
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	providers: [RecipeService]
 })
 export class RecipeListComponent implements OnInit {
-	recipes: Recipe[] = [
-		new Recipe('Test recipe', 'this is a test recipe', 'https://randomimg.png'),
-		new Recipe('Test recipe 2', 'this is a test recipe 2', 'https://randomimg2.png')
-	];
+	recipes: Recipe[] = [];
 	selectedRecipe: Recipe = null;
 
-	constructor() {}
+	constructor(private recipeService: RecipeService) {}
 
-	ngOnInit(): void {}
-
-	updateSelectedRecipe(recipe: Recipe) {
-		this.selectedRecipe = recipe;
+	ngOnInit() {
+		this.recipes = this.recipeService.getRecipeList();
+		this.recipeService.selectedRecipeUpdated.subscribe((recipe: Recipe) => {
+			this.selectedRecipe = recipe;
+		});
 	}
 }

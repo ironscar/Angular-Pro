@@ -1,5 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
 import { Ingredient } from '../../shared/ingredient.model';
+import { ShoppingService } from '../../services/shopping.service';
 
 @Component({
 	selector: 'app-shopping-list-edit',
@@ -9,17 +10,16 @@ import { Ingredient } from '../../shared/ingredient.model';
 })
 export class ShoppingListEditComponent implements OnInit {
 	currentIngredient: Ingredient = { name: '', quantity: 0 };
-	@Output() ingredientAdded = new EventEmitter<Ingredient>();
-	@Output() ingredientDeleted = new EventEmitter<string>();
 	@ViewChild('nameInput') nameInput: ElementRef;
 	@ViewChild('qtyInput') qtyInput: ElementRef;
 
-	constructor() {}
+	constructor(private shoppingService: ShoppingService) {}
 
 	ngOnInit(): void {}
 
 	onAdd() {
-		this.ingredientAdded.emit(new Ingredient(this.nameInput.nativeElement.value, this.qtyInput.nativeElement.value));
+		this.shoppingService.onAddIngredient(new Ingredient(this.nameInput.nativeElement.value, Number(this.qtyInput.nativeElement.value)));
+		this.onClear();
 	}
 
 	onClear() {
@@ -28,6 +28,6 @@ export class ShoppingListEditComponent implements OnInit {
 	}
 
 	onDelete() {
-		this.ingredientDeleted.emit(this.nameInput.nativeElement.value);
+		this.shoppingService.onDeleteIngredient(this.nameInput.nativeElement.value);
 	}
 }

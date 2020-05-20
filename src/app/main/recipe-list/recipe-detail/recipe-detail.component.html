@@ -8,11 +8,15 @@
 	<mat-card-content>
 		<p>{{recipe.description}}</p>
 		<hr>
-		<p> Recipe Ingredients </p>
+		<ul>
+			<li *ngFor='let ingredient of recipe.ingredients'>
+				{{ingredient.name}} ({{ingredient.quantity}})
+			</li>
+		</ul>
 	</mat-card-content>
 	<mat-card-actions>
-		<button mat-raised-button color='primary'>Shop</button>
+		<button mat-raised-button color='primary' (click)='toShoppingList()'>Shop</button>
 		<button mat-raised-button color='primary'>Edit</button>
-		<button mat-raised-button color='warn'>Delete</button>
+		<button mat-raised-button color='warn' (click)='deleteRecipe()'>Delete</button>
 	</mat-card-actions>
 </mat-card>

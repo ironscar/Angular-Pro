@@ -1,27 +1,31 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { ShoppingService } from './services/shopping.service';
 
 @Component({
 	selector: 'app-main',
 	templateUrl: './main.component.html',
 	styleUrls: ['./main.component.scss'],
-	changeDetection: ChangeDetectionStrategy.OnPush
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	providers: [ShoppingService]
 })
 export class MainComponent implements OnInit {
-	private static RECIPE_BOOK = 'Recipe-Book';
-	private static SHOPPING_LIST = 'Shopping-List';
-
-	appMode = MainComponent.RECIPE_BOOK;
+	tabIndex = 0;
 	dropdownOpen = false;
 
-	constructor() {}
+	constructor(private shoppingService: ShoppingService, private cdr: ChangeDetectorRef) {}
 
-	ngOnInit(): void {}
+	ngOnInit() {
+		this.shoppingService.recipeIngredsAdded.subscribe(() => {
+			this.changeAppMode();
+			this.cdr.detectChanges();
+		});
+	}
 
 	changeAppMode() {
-		if (this.appMode === MainComponent.RECIPE_BOOK) {
-			this.appMode = MainComponent.SHOPPING_LIST;
+		if (this.tabIndex === 0) {
+			this.tabIndex = 1;
 		} else {
-			this.appMode = MainComponent.RECIPE_BOOK;
+			this.tabIndex = 0;
 		}
 	}
 

@@ -1,5 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Ingredient } from '../shared/ingredient.model';
+import { ShoppingService } from '../services/shopping.service';
 
 @Component({
 	selector: 'app-shopping-list',
@@ -8,23 +9,18 @@ import { Ingredient } from '../shared/ingredient.model';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShoppingListComponent implements OnInit {
-	ingredients: Ingredient[] = [new Ingredient('test ingredient 1', 5), new Ingredient('test ingredient 2', 3)];
+	ingredients: Ingredient[] = [];
 
-	constructor() {}
+	constructor(private shoppingService: ShoppingService, private cdr: ChangeDetectorRef) {}
 
-	ngOnInit(): void {}
-
-	onIngredientAdded(ingredient: Ingredient) {
-		this.ingredients.push(ingredient);
-	}
-
-	onIngredientDeleted(ingredientName: string) {
-		const newIngredientList = [];
-		for (const ingredient of this.ingredients) {
-			if (ingredient.name !== ingredientName) {
-				newIngredientList.push(ingredient);
-			}
-		}
-		this.ingredients = newIngredientList;
+	ngOnInit() {
+		/* here when ingredients are added from recipe, it doesn't
+		 * detect changes as ingredients is still same reference
+		 * so we use cdr to detect changes by subscribing to it
+		 */
+		this.ingredients = this.shoppingService.getIngredients();
+		this.shoppingService.recipeIngredsAdded.subscribe(() => {
+			this.cdr.detectChanges();
+		});
 	}
 }
