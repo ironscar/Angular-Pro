@@ -1,5 +1,4 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-root',
@@ -8,27 +7,9 @@ import { Router } from '@angular/router';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
-	private static DEV_TYPE = 'Dev';
-	private static MAIN_TYPE = 'Main';
-	title = 'Angular Pro';
-	type = AppComponent.DEV_TYPE;
+	constructor() {}
 
-	constructor(private router: Router) {}
-
-	ngOnInit() {
-		if (!window.location.href.endsWith(this.type.toLowerCase())) {
-			this.onLoadOtherType();
-		}
-	}
-
-	onLoadOtherType() {
-		if (this.type === AppComponent.MAIN_TYPE) {
-			this.type = AppComponent.DEV_TYPE;
-		} else {
-			this.type = AppComponent.MAIN_TYPE;
-		}
-		this.router.navigate([this.type.toLowerCase()]);
-	}
+	ngOnInit() {}
 
 	toFlexLayoutAPI() {
 		window.open('https://tburleson-layouts-demos.firebaseapp.com/#/docs', '_blank');

@@ -1,0 +1,37 @@
+<h3> Home Component - Routing stuff </h3>
+<p> Buttons with programmatic routing </p>
+<button mat-raised-button color='primary' (click)='onLoadDeveloperEnvironment()'>
+	Load Developer Environment (route params)
+</button> &nbsp;
+<button mat-raised-button color='primary' (click)='onLoadDeveloperEnvironment("query")'>
+	Load Developer Environment (query params)
+</button><br><br>
+<button mat-raised-button color='primary' (click)='onLoadMainEnvironment()'>
+	Load Main Environment (route params)
+</button> &nbsp;
+<button mat-raised-button color='primary' (click)='onLoadMainEnvironment("hash")'>
+	Load Main Environment (hash params)
+</button><br><br>
+<hr>
+<p> Anchors using routerLink directive </p>
+<a mat-raised-button color='primary' routerLink='/dev/1'>
+	Load Developer Environment (route params)
+</a> &nbsp;
+<a mat-raised-button color='primary' routerLink='/dev' [queryParams]='{tab: 1}'>
+	Load Developer Environment (query params)
+</a><br><br>
+<a mat-raised-button color='primary' routerLink='/main/1'>
+	Load Main Environment (route params)
+</a> &nbsp;
+<a mat-raised-button color='primary' routerLink='/main' fragment='tab=1'>
+	Load Main Environment (hash params)
+</a><br><br>
+<hr>
+<a mat-raised-button color='primary' (click)='loadChildRoutes(1)'>
+	Load Home Child 1
+</a> &nbsp;
+<a mat-raised-button color='primary' (click)='loadChildRoutes(2)'>
+	Load Home Child 2
+</a><br><br>
+<router-outlet></router-outlet>
+<hr>

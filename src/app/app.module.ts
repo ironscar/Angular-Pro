@@ -24,6 +24,8 @@ import { DropdownDirective } from './main/directives/dropdown.directive';
 import { AccountListComponent } from './dev/account-list/account-list.component';
 import { AccountComponent } from './dev/account-list/account/account.component';
 import { NewAccountComponent } from './dev/account-list/new-account/new-account.component';
+import { HomeComponent } from './home/home.component';
+import { HomeChildComponent } from './home/home-child/home-child.component';
 
 @NgModule({
 	declarations: [
@@ -42,7 +44,9 @@ import { NewAccountComponent } from './dev/account-list/new-account/new-account.
 		DropdownDirective,
 		AccountListComponent,
 		AccountComponent,
-		NewAccountComponent
+		NewAccountComponent,
+		HomeComponent,
+		HomeChildComponent
 	],
 	imports: [
 		BrowserModule,

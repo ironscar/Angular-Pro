@@ -5,7 +5,7 @@
 			<mat-card-title>Development Project</mat-card-title>
 		</mat-card-header>
 		<mat-card-content>
-			<mat-tab-group>
+			<mat-tab-group [(selectedIndex)]='tabIndex'>
 				<mat-tab label="Components & Directives">
 					<button [disabled]='!flipDisable' (click)='onUpdateProfileFlag()'> Update Profile Flag </button>
 					<div *ngIf='!profileFlag; else profile'>

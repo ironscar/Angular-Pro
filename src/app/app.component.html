@@ -1,4 +1,7 @@
-<h1 (click)='onLoadOtherType()'>This is for {{title}} ({{type}})</h1>
+<a mat-raised-button routerLink='/' routerLinkActive='active-link' [routerLinkActiveOptions]='{exact: true}'>Angular
+	Pro (Home)</a>
+<a mat-raised-button routerLink='/dev' routerLinkActive='active-link'>Angular Pro (Dev)</a>
+<a mat-raised-button routerLink='/main' routerLinkActive='active-link'>Angular Pro (Main)</a>
 <div fxLayoutAlign='end'>
 	<button mat-raised-button color='primary' (click)='toFlexLayoutAPI()'> Flex Layout API </button>
 	&nbsp;
