@@ -21,4 +21,8 @@ export class RecipeListComponent implements OnInit {
 			this.selectedRecipe = recipe;
 		});
 	}
+
+	onNewRecipe() {
+		this.recipeService.setEditingRecipe(null);
+	}
 }

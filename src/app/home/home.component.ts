@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { AuthLoginService } from '../dev/services/auth-login.servce';
 
 @Component({
 	selector: 'app-home',
@@ -8,12 +9,21 @@ import { Router, ActivatedRoute } from '@angular/router';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit {
-	constructor(private router: Router, private route: ActivatedRoute) {}
+	constructor(private router: Router, private route: ActivatedRoute, private authLoginService: AuthLoginService) {}
 
 	ngOnInit() {}
 
 	loadChildRoutes(id: number) {
 		this.router.navigate(['/home', 'child', id]);
+	}
+
+	onLogin() {
+		this.authLoginService.login();
+	}
+
+	onLogout() {
+		this.authLoginService.logout();
+		this.router.navigate(['/home']);
 	}
 
 	onLoadDeveloperEnvironment(paramType: string = 'route') {

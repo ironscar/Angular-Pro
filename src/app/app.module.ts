@@ -26,6 +26,8 @@ import { AccountComponent } from './dev/account-list/account/account.component';
 import { NewAccountComponent } from './dev/account-list/new-account/new-account.component';
 import { HomeComponent } from './home/home.component';
 import { HomeChildComponent } from './home/home-child/home-child.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { RecipeEditComponent } from './main/recipe-list/recipe-edit/recipe-edit.component';
 
 @NgModule({
 	declarations: [
@@ -46,7 +48,9 @@ import { HomeChildComponent } from './home/home-child/home-child.component';
 		AccountComponent,
 		NewAccountComponent,
 		HomeComponent,
-		HomeChildComponent
+		HomeChildComponent,
+		PageNotFoundComponent,
+		RecipeEditComponent
 	],
 	imports: [
 		BrowserModule,

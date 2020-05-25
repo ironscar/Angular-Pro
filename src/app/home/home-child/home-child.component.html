@@ -1,1 +1,4 @@
-<p>home-child works! {{message}}</p>
+<p> {{name}} works! {{message}}</p>
+<p> Changes are <span *ngIf='!changesSaved'>un</span>saved </p>
+<button mat-flat-button (click)='saveChanges()'>Save Changes</button>
+<br>

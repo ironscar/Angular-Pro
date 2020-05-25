@@ -14,14 +14,23 @@ export class RecipeService {
 		])
 	];
 	private selectedRecipe: Recipe = null;
+	private editingRecipe: Recipe = null;
 
 	public selectedRecipeUpdated = new EventEmitter<Recipe>();
+	public startEditingRecipe = new EventEmitter<Recipe>();
 
 	constructor() {}
 
 	setSelectedRecipe(recipe: Recipe) {
+		this.editingRecipe = null;
 		this.selectedRecipe = recipe;
 		this.selectedRecipeUpdated.emit(recipe);
+	}
+
+	setEditingRecipe(recipe: Recipe) {
+		this.setSelectedRecipe(null);
+		this.editingRecipe = recipe;
+		this.startEditingRecipe.emit(recipe);
 	}
 
 	deleteRecipe(newRecipe: Recipe) {
@@ -42,5 +51,9 @@ export class RecipeService {
 
 	getSelectedRecipe() {
 		return this.selectedRecipe;
+	}
+
+	getEditingRecipe() {
+		return this.editingRecipe;
 	}
 }
