@@ -1,3 +1,7 @@
 <app-new-account></app-new-account>
 <hr>
+<button [disabled]='customSubject.isStopped' mat-button color='primary' (click)='passNewValueFromSubject()'>
+	Trigger Subject
+</button>
+<hr>
 <app-account *ngFor='let account of accountList' [account]='account'></app-account>
