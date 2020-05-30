@@ -1,10 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -28,6 +31,7 @@ import { HomeComponent } from './home/home.component';
 import { HomeChildComponent } from './home/home-child/home-child.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { RecipeEditComponent } from './main/recipe-list/recipe-edit/recipe-edit.component';
+import { FormComponent } from './dev/form/form.component';
 
 @NgModule({
 	declarations: [
@@ -50,17 +54,22 @@ import { RecipeEditComponent } from './main/recipe-list/recipe-edit/recipe-edit.
 		HomeComponent,
 		HomeChildComponent,
 		PageNotFoundComponent,
-		RecipeEditComponent
+		RecipeEditComponent,
+		FormComponent
 	],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
 		BrowserAnimationsModule,
 		FormsModule,
+		ReactiveFormsModule,
 		FlexLayoutModule,
 		MatTabsModule,
 		MatCardModule,
-		MatButtonModule
+		MatButtonModule,
+		MatInputModule,
+		MatFormFieldModule,
+		MatSelectModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]

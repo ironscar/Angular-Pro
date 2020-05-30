@@ -1,9 +1,10 @@
 import { Ingredient } from '../shared/ingredient.model';
 import { EventEmitter } from '@angular/core';
+import { Subject } from 'rxjs';
 
 export class ShoppingService {
 	private ingredients: Ingredient[] = [new Ingredient('test ingredient 1', 5), new Ingredient('test ingredient 2', 3)];
-	public recipeIngredsAdded = new EventEmitter<void>();
+	public recipeIngredsAdded = new Subject<void>();
 
 	constructor() {}
 
@@ -16,7 +17,7 @@ export class ShoppingService {
 			this.onAddIngredient({ ...ingredient });
 		}
 		if (routeToShoppingList) {
-			this.recipeIngredsAdded.emit();
+			this.recipeIngredsAdded.next();
 		}
 	}
 

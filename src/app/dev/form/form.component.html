@@ -1,0 +1,41 @@
+<div fxLayout='row' fxLayoutAlign='space-around start'>
+	<form (ngSubmit)='onTemplateFormSubmit()' #templateForm='ngForm'>
+		<br><br>
+		<h2> Template Form </h2>
+		<mat-form-field>
+			<mat-label> Name </mat-label>
+			<input matInput type='text' name='name' ngModel>
+		</mat-form-field>
+		<br><br>
+		<mat-form-field>
+			<mat-label> Mail </mat-label>
+			<input matInput type='text' name='mail' ngModel>
+		</mat-form-field>
+		<br><br>
+		<mat-form-field>
+			<mat-label> Secret Questions </mat-label>
+			<mat-select name='secret' ngModel>
+				<mat-option value='pet'>Name of pet</mat-option>
+				<mat-option value='maiden'>Mother's maiden name</mat-option>
+				<mat-option value='teacher'>Your first teacher</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<br><br>
+		<button mat-raised-button color='warn' type='submit'> Submit </button>
+	</form>
+	<form>
+		<br><br>
+		<h2> Reactive Form </h2>
+		<mat-form-field>
+			<mat-label> Name </mat-label>
+			<input matInput type='text' name='name'>
+		</mat-form-field>
+		<br><br>
+		<mat-form-field>
+			<mat-label> Mail </mat-label>
+			<input matInput type='text' name='mail'>
+		</mat-form-field>
+		<br><br>
+		<button mat-raised-button color='warn' type='button'> Submit </button>
+	</form>
+</div>

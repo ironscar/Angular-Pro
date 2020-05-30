@@ -1,6 +1,7 @@
 import { Recipe } from '../recipe-list/recipe.model';
 import { EventEmitter } from '@angular/core';
 import { Ingredient } from '../shared/ingredient.model';
+import { Subject } from 'rxjs';
 
 export class RecipeService {
 	private recipes: Recipe[] = [
@@ -16,21 +17,21 @@ export class RecipeService {
 	private selectedRecipe: Recipe = null;
 	private editingRecipe: Recipe = null;
 
-	public selectedRecipeUpdated = new EventEmitter<Recipe>();
-	public startEditingRecipe = new EventEmitter<Recipe>();
+	public selectedRecipeUpdated = new Subject<Recipe>();
+	public startEditingRecipe = new Subject<Recipe>();
 
 	constructor() {}
 
 	setSelectedRecipe(recipe: Recipe) {
 		this.editingRecipe = null;
 		this.selectedRecipe = recipe;
-		this.selectedRecipeUpdated.emit(recipe);
+		this.selectedRecipeUpdated.next(recipe);
 	}
 
 	setEditingRecipe(recipe: Recipe) {
 		this.setSelectedRecipe(null);
 		this.editingRecipe = recipe;
-		this.startEditingRecipe.emit(recipe);
+		this.startEditingRecipe.next(recipe);
 	}
 
 	deleteRecipe(newRecipe: Recipe) {

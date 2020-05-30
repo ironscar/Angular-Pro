@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { AccountsService } from '../services/accounts.service';
 import { LoggingService } from '../services/logging.service';
-import { Subscription, Observable, Subscriber, Subject } from 'rxjs';
+import { Subscription, Observable, Subscriber, Subject, pipe } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 @Component({
@@ -43,41 +43,44 @@ export class AccountListComponent implements OnInit, OnDestroy {
 		}
 	}
 
+	private discardAlternateAndIncrement() {
+		// you can make your own operators usig pipe function like this
+		return pipe(
+			filter((data: number) => {
+				return data % 2 === 0;
+			}),
+			map((data: number) => {
+				return 'Round ' + (data + 1);
+			})
+		);
+	}
+
 	subscribeToSubject() {
-		this.subjectSubscription = this.customSubject
-			.pipe(
-				filter((data: number) => {
-					return data % 2 === 0;
-				}),
-				map((data: number) => {
-					return 'Subject passed ' + (data + 1);
-				})
-			)
-			.subscribe(
-				data => {
-					console.log(data);
-				},
-				error => {
-					console.log(error.message);
-				},
-				() => {
-					console.log('subject completed');
-				}
-			);
+		this.subjectSubscription = this.customSubject.pipe(this.discardAlternateAndIncrement()).subscribe(
+			data => {
+				console.log(data);
+			},
+			error => {
+				console.log(error.message);
+			},
+			() => {
+				console.log('subject completed');
+			}
+		);
 	}
 
 	createAndSubscribeToCustomObservable() {
 		console.log('observable started');
 		let count = 0;
 		// creating observable
-		const customObservable = new Observable((observer: Subscriber<any>) => {
+		const customObservable = new Observable((subscriber: Subscriber<any>) => {
 			setInterval(() => {
-				observer.next(count);
+				subscriber.next(count);
 				if (count >= 4) {
-					observer.complete();
+					subscriber.complete();
 				}
 				if (count < 0) {
-					observer.error(new Error('negative numbers not allowed'));
+					subscriber.error(new Error('negative numbers not allowed'));
 				}
 				count++;
 			}, 500);
@@ -114,5 +117,4 @@ export class AccountListComponent implements OnInit, OnDestroy {
 
 /**
  * update all service event emitters to subjects
- * add other rxjs operators here
  */

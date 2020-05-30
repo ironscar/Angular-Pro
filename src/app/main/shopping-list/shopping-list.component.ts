@@ -1,6 +1,7 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingService } from '../services/shopping.service';
+import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'app-shopping-list',
@@ -8,8 +9,9 @@ import { ShoppingService } from '../services/shopping.service';
 	styleUrls: ['./shopping-list.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ShoppingListComponent implements OnInit {
+export class ShoppingListComponent implements OnInit, OnDestroy {
 	ingredients: Ingredient[] = [];
+	shoppingSubscription: Subscription;
 
 	constructor(private shoppingService: ShoppingService, private cdr: ChangeDetectorRef) {}
 
@@ -19,8 +21,12 @@ export class ShoppingListComponent implements OnInit {
 		 * so we use cdr to detect changes by subscribing to it
 		 */
 		this.ingredients = this.shoppingService.getIngredients();
-		this.shoppingService.recipeIngredsAdded.subscribe(() => {
+		this.shoppingSubscription = this.shoppingService.recipeIngredsAdded.subscribe(() => {
 			this.cdr.detectChanges();
 		});
+	}
+
+	ngOnDestroy() {
+		this.shoppingSubscription.unsubscribe();
 	}
 }

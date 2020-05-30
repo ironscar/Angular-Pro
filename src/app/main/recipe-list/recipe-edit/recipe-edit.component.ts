@@ -1,6 +1,7 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { RecipeService } from '../../services/recipe.service';
 import { Recipe } from '../recipe.model';
+import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'app-recipe-edit',
@@ -8,20 +9,25 @@ import { Recipe } from '../recipe.model';
 	styleUrls: ['./recipe-edit.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RecipeEditComponent implements OnInit {
+export class RecipeEditComponent implements OnInit, OnDestroy {
 	editingRecipe: Recipe;
 	editMode = false;
+	recipeSubscription: Subscription;
 
 	constructor(private recipeService: RecipeService) {}
 
 	ngOnInit() {
-		this.recipeService.startEditingRecipe.subscribe((recipe: Recipe) => {
+		this.recipeSubscription = this.recipeService.startEditingRecipe.subscribe((recipe: Recipe) => {
 			this.editingRecipe = recipe;
 			if (this.editingRecipe) {
 				this.editMode = true;
 			}
 			console.log(this.editMode);
 		});
+	}
+
+	ngOnDestroy() {
+		this.recipeSubscription.unsubscribe();
 	}
 }
 
