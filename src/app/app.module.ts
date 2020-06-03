@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatRadioModule } from '@angular/material/radio';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -69,7 +70,8 @@ import { FormComponent } from './dev/form/form.component';
 		MatButtonModule,
 		MatInputModule,
 		MatFormFieldModule,
-		MatSelectModule
+		MatSelectModule,
+		MatRadioModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]

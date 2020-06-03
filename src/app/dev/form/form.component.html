@@ -1,41 +1,85 @@
 <div fxLayout='row' fxLayoutAlign='space-around start'>
 	<form (ngSubmit)='onTemplateFormSubmit()' #templateForm='ngForm'>
 		<br><br>
-		<h2> Template Form </h2>
+		<h2> {{nameInput}}<span *ngIf='nameInput'>'s</span> Template Form </h2>
+		<div ngModelGroup='userData' #userData='ngModelGroup'>
+			<mat-form-field>
+				<mat-label> Name </mat-label>
+				<input matInput type='text' name='name' [(ngModel)]='nameInput' required #name='ngModel'>
+				<mat-error *ngIf='!name.valid'>
+					Name invalid
+				</mat-error>
+			</mat-form-field>
+			<br><br>
+			<mat-form-field>
+				<mat-label> Mail </mat-label>
+				<input matInput type='email' name='mail' ngModel required email #mail='ngModel'>
+				<mat-error *ngIf='!mail.value'>Required value</mat-error>
+				<mat-error *ngIf='mail.value && !mail.valid'>
+					Email invalid
+				</mat-error>
+			</mat-form-field>
+			<br><br>
+			<mat-label> Select your gender: </mat-label>
+			<mat-radio-group name='gender' ngModel required #gender='ngModel'>
+				<div *ngFor='let gender of genders'>
+					<mat-radio-button [value]='gender'>{{gender}}</mat-radio-button>
+				</div>
+			</mat-radio-group>
+			<mat-error *ngIf='!gender.valid'> Please select gender </mat-error>
+		</div>
+		<br>
+		<mat-error *ngIf='userData.touched && !userData.valid'> User data is invalid! </mat-error>
+		<br>
+		<mat-form-field>
+			<mat-label> Secret Questions </mat-label>
+			<mat-select name='secret' [ngModel]='secretInput' required>
+				<mat-option value='pet'>Name of pet</mat-option>
+				<mat-option value='maiden'>Mother's maiden name</mat-option>
+				<mat-option value='teacher'>Your first teacher</mat-option>
+			</mat-select>
+			<mat-error *ngIf='templateForm.form.controls.secret && 
+					templateForm.form.controls.secret.status === "INVALID"'>
+				Secret unselected
+			</mat-error>
+		</mat-form-field>
+		<br><br>
+		<button mat-raised-button color='warn' type='submit' [disabled]='!templateForm.form.valid'>
+			Submit
+		</button> &nbsp;
+		<button mat-raised-button color='primary' type='button' (click)='onTemplateFormReset()'>
+			Reset
+		</button>
+	</form>
+	<form [formGroup]='reactiveForm' (ngSubmit)='submitReactiveForm()'>
+		<br><br>
+		<h2> Reactive Form </h2>
 		<mat-form-field>
 			<mat-label> Name </mat-label>
-			<input matInput type='text' name='name' ngModel>
+			<input matInput type='text' formControlName='username'>
 		</mat-form-field>
 		<br><br>
 		<mat-form-field>
 			<mat-label> Mail </mat-label>
-			<input matInput type='text' name='mail' ngModel>
+			<input matInput type='text' formControlName='usermail'>
 		</mat-form-field>
 		<br><br>
+		<mat-radio-group formControlName='sex'>
+			<div *ngFor='let gender of genders'>
+				<mat-radio-button [value]='gender'>{{gender}}</mat-radio-button>
+			</div>
+		</mat-radio-group>
+		<br><br>
 		<mat-form-field>
-			<mat-label> Secret Questions </mat-label>
-			<mat-select name='secret' ngModel>
+			<mat-label> Mail </mat-label>
+			<mat-select formControlName='usersecret'>
 				<mat-option value='pet'>Name of pet</mat-option>
 				<mat-option value='maiden'>Mother's maiden name</mat-option>
 				<mat-option value='teacher'>Your first teacher</mat-option>
 			</mat-select>
 		</mat-form-field>
 		<br><br>
-		<button mat-raised-button color='warn' type='submit'> Submit </button>
-	</form>
-	<form>
-		<br><br>
-		<h2> Reactive Form </h2>
-		<mat-form-field>
-			<mat-label> Name </mat-label>
-			<input matInput type='text' name='name'>
-		</mat-form-field>
-		<br><br>
-		<mat-form-field>
-			<mat-label> Mail </mat-label>
-			<input matInput type='text' name='mail'>
-		</mat-form-field>
-		<br><br>
-		<button mat-raised-button color='warn' type='button'> Submit </button>
+		<button mat-raised-button color='warn' type='submit'>Submit</button> &nbsp;
+		<button mat-raised-button color='primary' type='button'>Reset</button>
 	</form>
 </div>
