@@ -1,4 +1,85 @@
 <div fxLayout='row' fxLayoutAlign='space-around start'>
+	<form [formGroup]='reactiveForm' (ngSubmit)='submitReactiveForm()'>
+		<br><br>
+		<h2> Reactive Form </h2>
+		<div formGroupName='userDetails'>
+			<mat-form-field>
+				<mat-label> Name </mat-label>
+				<input matInput type='text' formControlName='username'>
+				<mat-error
+					*ngIf='reactiveForm.get("userDetails.username").errors && reactiveForm.get("userDetails.username").errors.required'>
+					Username cannot be null
+				</mat-error>
+				<mat-error
+					*ngIf='reactiveForm.get("userDetails.username").errors && reactiveForm.get("userDetails.username").errors.nameIsForbidden'>
+					Forbidden user name
+				</mat-error>
+				<mat-error
+					*ngIf='reactiveForm.get("userDetails.username").errors && reactiveForm.get("userDetails.username").errors.asyncNameForbidden'>
+					Async forbidden user name
+				</mat-error>
+			</mat-form-field>
+			<br><br>
+			<mat-form-field>
+				<mat-label> Mail </mat-label>
+				<input matInput type='text' formControlName='usermail'>
+				<mat-error
+					*ngIf='reactiveForm.get("userDetails.usermail").touched && !reactiveForm.get("userDetails.usermail").value'>
+					Cannot be null
+				</mat-error>
+				<mat-error
+					*ngIf='reactiveForm.get("userDetails.usermail").value && !reactiveForm.get("userDetails.usermail").valid'>
+					Invalid email
+				</mat-error>
+			</mat-form-field>
+			<br><br>
+			<mat-radio-group formControlName='sex'>
+				<div *ngFor='let gender of genders'>
+					<mat-radio-button [value]='gender'>{{gender}}</mat-radio-button>
+				</div>
+			</mat-radio-group>
+			<mat-error *ngIf='!reactiveForm.get("userDetails.sex").valid'>Please select a gender</mat-error>
+		</div>
+		<br>
+		<mat-error *ngIf='reactiveForm.get("userDetails").touched && !reactiveForm.get("userDetails").valid'>
+			User details invalid
+		</mat-error>
+		<br>
+		<div formArrayName='hobbies'>
+			<h4> Hobbies </h4>
+			<button mat-raised-button color type='button' [disabled]='getReactiveFormArray().length >= 3'
+				(click)='addControlToReactiveForm()'>
+				Add Hobby
+			</button>
+			<br><br>
+			<div *ngFor='let hobby of getReactiveFormArray(); let i = index'>
+				<mat-form-field>
+					<mat-label>Hobby {{(i+1)}} </mat-label>
+					<input matInput [formControlName]='i'>
+					<mat-error *ngIf='hobby.touched && !hobby.valid'> Please enter hobby </mat-error>
+				</mat-form-field>
+				<br>
+			</div>
+		</div>
+		<mat-form-field>
+			<mat-label> Secret question </mat-label>
+			<mat-select formControlName='usersecret'>
+				<mat-option value='pet'>Name of pet</mat-option>
+				<mat-option value='maiden'>Mother's maiden name</mat-option>
+				<mat-option value='teacher'>Your first teacher</mat-option>
+			</mat-select>
+			<mat-error *ngIf='reactiveForm.touched && !reactiveForm.get("usersecret").valid'>
+				Please select secret question
+			</mat-error>
+		</mat-form-field>
+		<br><br>
+		<button mat-raised-button color='warn' type='submit' [disabled]='!reactiveForm.valid'>
+			Submit
+		</button> &nbsp;
+		<button mat-raised-button color='primary' type='button' (click)='resetReactiveForm()'>
+			Reset
+		</button>
+	</form>
 	<form (ngSubmit)='onTemplateFormSubmit()' #templateForm='ngForm'>
 		<br><br>
 		<h2> {{nameInput}}<span *ngIf='nameInput'>'s</span> Template Form </h2>
@@ -50,36 +131,5 @@
 		<button mat-raised-button color='primary' type='button' (click)='onTemplateFormReset()'>
 			Reset
 		</button>
-	</form>
-	<form [formGroup]='reactiveForm' (ngSubmit)='submitReactiveForm()'>
-		<br><br>
-		<h2> Reactive Form </h2>
-		<mat-form-field>
-			<mat-label> Name </mat-label>
-			<input matInput type='text' formControlName='username'>
-		</mat-form-field>
-		<br><br>
-		<mat-form-field>
-			<mat-label> Mail </mat-label>
-			<input matInput type='text' formControlName='usermail'>
-		</mat-form-field>
-		<br><br>
-		<mat-radio-group formControlName='sex'>
-			<div *ngFor='let gender of genders'>
-				<mat-radio-button [value]='gender'>{{gender}}</mat-radio-button>
-			</div>
-		</mat-radio-group>
-		<br><br>
-		<mat-form-field>
-			<mat-label> Mail </mat-label>
-			<mat-select formControlName='usersecret'>
-				<mat-option value='pet'>Name of pet</mat-option>
-				<mat-option value='maiden'>Mother's maiden name</mat-option>
-				<mat-option value='teacher'>Your first teacher</mat-option>
-			</mat-select>
-		</mat-form-field>
-		<br><br>
-		<button mat-raised-button color='warn' type='submit'>Submit</button> &nbsp;
-		<button mat-raised-button color='primary' type='button'>Reset</button>
 	</form>
 </div>
