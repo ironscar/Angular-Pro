@@ -1,5 +1,4 @@
 import { Recipe } from '../recipe-list/recipe.model';
-import { EventEmitter } from '@angular/core';
 import { Ingredient } from '../shared/ingredient.model';
 import { Subject } from 'rxjs';
 
@@ -32,6 +31,11 @@ export class RecipeService {
 		this.setSelectedRecipe(null);
 		this.editingRecipe = recipe;
 		this.startEditingRecipe.next(recipe);
+	}
+
+	addRecipe(newRecipe: Recipe) {
+		this.recipes.push(newRecipe);
+		this.setSelectedRecipe(newRecipe);
 	}
 
 	deleteRecipe(newRecipe: Recipe) {

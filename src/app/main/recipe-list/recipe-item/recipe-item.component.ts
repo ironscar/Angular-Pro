@@ -1,6 +1,7 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Recipe } from '../recipe.model';
 import { RecipeService } from '../../services/recipe.service';
+import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'app-recipe-item',
@@ -8,14 +9,26 @@ import { RecipeService } from '../../services/recipe.service';
 	styleUrls: ['./recipe-item.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RecipeItemComponent implements OnInit {
+export class RecipeItemComponent implements OnInit, OnDestroy {
 	@Input() recipe: Recipe;
 
-	constructor(private recipeService: RecipeService) {}
+	private recipeSubscription: Subscription;
 
-	ngOnInit(): void {}
+	constructor(private recipeService: RecipeService, private cdr: ChangeDetectorRef) {}
+
+	ngOnInit() {
+		this.recipeSubscription = this.recipeService.selectedRecipeUpdated.subscribe((recipe: Recipe) => {
+			if (recipe) {
+				this.cdr.detectChanges();
+			}
+		});
+	}
 
 	onRecipeItemClicked() {
 		this.recipeService.setSelectedRecipe(this.recipe);
+	}
+
+	ngOnDestroy() {
+		this.recipeSubscription.unsubscribe();
 	}
 }

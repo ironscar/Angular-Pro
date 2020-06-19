@@ -1,1 +1,60 @@
-<h2> Let's make our recipe </h2>
+<h2> Let's make our own recipe </h2>
+<form [formGroup]='recipeForm' (ngSubmit)='onSubmitRecipe()'>
+	<mat-form-field>
+		<mat-label>Recipe Name</mat-label>
+		<input matInput formControlName='recipeName' type='text'>
+		<mat-error *ngIf='recipeForm.get("recipeName").errors && recipeForm.get("recipeName").errors.required'>
+			Enter a name
+		</mat-error>
+	</mat-form-field>
+	<br><br>
+	<mat-form-field>
+		<mat-label>Recipe Description</mat-label>
+		<input matInput formControlName='recipeDesc' type='text'>
+		<mat-error *ngIf='recipeForm.get("recipeDesc").errors && recipeForm.get("recipeDesc").errors.required'>
+			Enter some description
+		</mat-error>
+	</mat-form-field>
+	<br><br>
+	<mat-form-field>
+		<mat-label>Recipe Image</mat-label>
+		<input matInput formControlName='recipeImage' type='text'>
+		<mat-error *ngIf='recipeForm.get("recipeImage").errors && recipeForm.get("recipeImage").errors.required'>
+			Enter some image url
+		</mat-error>
+	</mat-form-field>
+	<br><br>
+	<div formArrayName='ingredients' *ngFor='let ingredient of getIngredientList(); let i = index'>
+		<h4> Ingredient {{i+1}} </h4>
+		<div [formGroupName]='i' fxLayout='row' fxLayoutAlign='space-around start'>
+			<div fxFlex='50'>
+				<mat-form-field>
+					<mat-label>Ingredient name</mat-label>
+					<input matInput formControlName='ingredientName' type='text'>
+					<mat-error
+						*ngIf='ingredient.get("ingredientName").touched && !ingredient.get("ingredientName").valid'>
+						Enter a name
+					</mat-error>
+				</mat-form-field>
+			</div>
+			<div fxFlex='50'>
+				<mat-form-field>
+					<mat-label>Ingredient amount</mat-label>
+					<input matInput formControlName='ingredientAmount' type='text'>
+					<mat-error
+						*ngIf='ingredient.get("ingredientAmount").touched && !ingredient.get("ingredientAmount").valid'>
+						Enter non-zero amount
+					</mat-error>
+				</mat-form-field>
+			</div>
+		</div>
+	</div>
+	<br><br>
+	<button type='button' mat-raised-button color='primary' (click)='onAddIngredient()'
+		[disabled]='getIngredientList().length >= 5'>Add Ingredient</button>
+	<br><br>
+	<button type='submit' mat-raised-button color='primary' [disabled]='!recipeForm.valid'>
+		Submit Recipe
+	</button> &nbsp;
+	<button type='button' mat-raised-button color='primary' (click)='onClearForm()'>Clear Form</button>
+</form>
