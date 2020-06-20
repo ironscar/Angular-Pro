@@ -1,0 +1,44 @@
+<div fxLayout='row' fxLayoutAlign='space-between start'>
+	<div fxFlex='45'>
+		<br>
+		<h2> Pipes {{moduleStatus | async}} </h2>
+		<mat-form-field>
+			<mat-label>Property name</mat-label>
+			<input matInput type='text' [(ngModel)]='filterProp'>
+		</mat-form-field>
+		&nbsp; &nbsp;
+		<mat-form-field>
+			<mat-label>Property value</mat-label>
+			<input matInput type='text' [(ngModel)]='filterString'>
+		</mat-form-field>
+		<hr>
+		<div *ngFor='let server of ( servers | filter:filterString:filterProp )'>
+			<p [ngStyle]='{ "background-color": getColorFromCores(server), "padding": "1em" }'>
+				<b> {{server.name | shorten:'_'}} </b> &mdash;
+				{{server.status}} {{server.capacity | uppercase | slice:0:1}}{{server.capacity | slice:1}}
+				server with {{server.cores}} cores
+			</p>
+		</div>
+		<hr>
+		<button mat-raised-button color='primary' (click)='onAddServer()' [disabled]='servers.length >= 7'>
+			Add Server
+		</button>
+		<!-- 
+			pipe parameters are specified after a ':' after the pipe
+			like > {{server.date | date:'fullDate' }}
+			means date pipe takes one string parameter with an allowed value 'fullDate'
+			additional parameters are separated by ':'
+			additional pipes are separated by '|'
+			pipe order matters as the next pipe works on result of previous pipe
+			therefore '| uppercase | slice' works but the other way around gives error
+			shorten is the custom pipe we made with a parameter for the separator symbol
+			filter is the custom pipe to filter servers by specific property name and value
+			async pipe can resolve promises n observables asynchronously and hide them until then
+		-->
+	</div>
+	<div fxFlex='45'>
+		<br>
+		<h2> Http Requests {{moduleStatus | async}} </h2>
+		<!-- Http Request related code here -->
+	</div>
+</div>

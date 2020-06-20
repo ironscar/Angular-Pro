@@ -33,6 +33,9 @@ import { HomeChildComponent } from './home/home-child/home-child.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { RecipeEditComponent } from './main/recipe-list/recipe-edit/recipe-edit.component';
 import { FormComponent } from './dev/form/form.component';
+import { HttpPipeComponent } from './dev/http-pipe/http-pipe.component';
+import { ShortenPipe } from './dev/pipes/shorten.pipe';
+import { FilterPipe } from './dev/pipes/filter.pipe';
 
 @NgModule({
 	declarations: [
@@ -56,7 +59,10 @@ import { FormComponent } from './dev/form/form.component';
 		HomeChildComponent,
 		PageNotFoundComponent,
 		RecipeEditComponent,
-		FormComponent
+		FormComponent,
+		HttpPipeComponent,
+		ShortenPipe,
+		FilterPipe
 	],
 	imports: [
 		BrowserModule,
