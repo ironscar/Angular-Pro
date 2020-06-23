@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
 	selector: 'app-http-pipe',
@@ -7,6 +8,7 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HttpPipeComponent implements OnInit {
+	// pipes members
 	moduleStatus = new Promise(resolve => {
 		setTimeout(() => {
 			resolve('Loaded');
@@ -21,9 +23,19 @@ export class HttpPipeComponent implements OnInit {
 		{ capacity: 'small', name: 'Development Server', status: 'unstable', cores: 8 }
 	];
 
-	constructor(private cdr: ChangeDetectorRef) {}
+	// http members
+	apiUrl = 'http://localhost:8080';
+	requestType = 'GET';
+	userId: number;
+	userName: string;
+	userAge: number;
+	users: { id: number; firstName: string; lastName: string; age: number }[] = [];
 
-	ngOnInit() {}
+	constructor(private cdr: ChangeDetectorRef, private httpClient: HttpClient) {}
+
+	ngOnInit() {
+		this.getAllUsers();
+	}
 
 	getColorFromCores(server: { capacity: string; name: string; status: string; cores: number }) {
 		if (server.status === 'unstable') {
@@ -50,4 +62,81 @@ export class HttpPipeComponent implements OnInit {
 			}, 100);
 		}
 	}
+
+	userFormFunctions() {
+		switch (this.requestType) {
+			case 'GET':
+				const selectedUser = this.getExistingUser(this.userId);
+				if (selectedUser) {
+					console.log('selected user is ', selectedUser);
+				}
+				break;
+			case 'POST':
+				this.createNewUser({
+					id: this.userId,
+					firstName: this.userName.split(' ')[0],
+					lastName: this.userName.split(' ')[1],
+					age: this.userAge
+				});
+				break;
+			case 'PUT':
+				this.updateExistingUser({
+					id: this.userId,
+					firstName: this.userName.split(' ')[0],
+					lastName: this.userName.split(' ')[1],
+					age: this.userAge
+				});
+				break;
+			case 'DELETE':
+				this.deleteExistingUser(this.userId);
+				break;
+		}
+	}
+
+	getAllUsers() {
+		console.log('get all');
+		this.httpClient.get(this.apiUrl + '/users').subscribe(responseData => {
+			console.log(responseData);
+			if (responseData) {
+				this.users = responseData as { id: number; firstName: string; lastName: string; age: number }[];
+				this.cdr.detectChanges();
+			}
+		});
+	}
+
+	getExistingUser(userId: number) {
+		let selectedUser: { id: number; firstName: string; lastName: string; age: number };
+		this.httpClient.get(this.apiUrl + '/users/' + userId).subscribe(responseData => {
+			console.log(responseData);
+			if (responseData) {
+				selectedUser = responseData as { id: number; firstName: string; lastName: string; age: number };
+			}
+		});
+		return selectedUser;
+	}
+
+	createNewUser(newUser: { id: number; firstName: string; lastName: string; age: number }) {
+		this.httpClient.post(this.apiUrl + '/users', newUser).subscribe(responseData => {
+			console.log(responseData);
+			this.getAllUsers();
+		});
+	}
+
+	updateExistingUser(newUser: { id: number; firstName: string; lastName: string; age: number }) {
+		this.httpClient.put(this.apiUrl + '/users/' + newUser.id, newUser).subscribe(responseData => {
+			console.log(responseData);
+			this.getAllUsers();
+		});
+	}
+
+	deleteExistingUser(userId: number) {
+		this.httpClient.delete(this.apiUrl + '/users/' + userId).subscribe(responseData => {
+			console.log(responseData);
+			this.getAllUsers();
+		});
+	}
 }
+
+/**
+ * Handle error cases when id doesn't exist or something
+ */
