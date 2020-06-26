@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -79,6 +80,7 @@ import { FilterPipe } from './dev/pipes/filter.pipe';
 		MatFormFieldModule,
 		MatSelectModule,
 		MatRadioModule,
+		MatProgressSpinnerModule,
 		HttpClientModule
 	],
 	providers: [],

@@ -1,18 +1,20 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+
+import { UserRecord } from './user.interface';
+import { BackendApiService } from '../services/backend-api.service';
 
 @Component({
 	selector: 'app-http-pipe',
 	templateUrl: './http-pipe.component.html',
 	styleUrls: ['./http-pipe.component.scss'],
-	changeDetection: ChangeDetectionStrategy.OnPush
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	providers: [BackendApiService]
 })
-export class HttpPipeComponent implements OnInit {
+export class HttpPipeComponent implements OnInit, OnDestroy {
 	// pipes members
-	moduleStatus = new Promise(resolve => {
-		setTimeout(() => {
-			resolve('Loaded');
-		}, 4000);
+	pipeStatus = new Promise(resolve => {
+		setTimeout(() => resolve('loaded'), 3000);
 	});
 	filterString: string;
 	filterProp: string;
@@ -24,17 +26,37 @@ export class HttpPipeComponent implements OnInit {
 	];
 
 	// http members
+	moduleStatus = false;
 	apiUrl = 'http://localhost:8080';
 	requestType = 'GET';
 	userId: number;
 	userName: string;
 	userAge: number;
-	users: { id: number; firstName: string; lastName: string; age: number }[] = [];
+	users: UserRecord[] = [];
+	responseSubscription: Subscription;
+	httpErrorSubscription: Subscription;
+	errorMessage: string = null;
 
-	constructor(private cdr: ChangeDetectorRef, private httpClient: HttpClient) {}
+	constructor(private cdr: ChangeDetectorRef, private apiService: BackendApiService) {}
 
 	ngOnInit() {
-		this.getAllUsers();
+		this.apiService.getAllUsers();
+		this.responseSubscription = this.apiService.responseSubject.subscribe((response: { type: string; users: UserRecord[] }) => {
+			if (response.type === 'all') {
+				console.log('get all users');
+				this.users = response.users;
+				this.moduleStatus = true;
+				this.cdr.detectChanges();
+			}
+			if (response.type === 'one') {
+				console.log('selected user is ', response.users[0]);
+			}
+		});
+		this.httpErrorSubscription = this.apiService.errorSubject.subscribe(data => {
+			this.moduleStatus = true;
+			this.errorMessage = data;
+			this.cdr.detectChanges();
+		});
 	}
 
 	getColorFromCores(server: { capacity: string; name: string; status: string; cores: number }) {
@@ -64,15 +86,14 @@ export class HttpPipeComponent implements OnInit {
 	}
 
 	userFormFunctions() {
+		this.errorMessage = null;
+		this.moduleStatus = this.requestType === 'GET';
 		switch (this.requestType) {
 			case 'GET':
-				const selectedUser = this.getExistingUser(this.userId);
-				if (selectedUser) {
-					console.log('selected user is ', selectedUser);
-				}
+				this.apiService.getExistingUser(this.userId);
 				break;
 			case 'POST':
-				this.createNewUser({
+				this.apiService.createNewUser({
 					id: this.userId,
 					firstName: this.userName.split(' ')[0],
 					lastName: this.userName.split(' ')[1],
@@ -80,7 +101,7 @@ export class HttpPipeComponent implements OnInit {
 				});
 				break;
 			case 'PUT':
-				this.updateExistingUser({
+				this.apiService.updateUser({
 					id: this.userId,
 					firstName: this.userName.split(' ')[0],
 					lastName: this.userName.split(' ')[1],
@@ -88,55 +109,13 @@ export class HttpPipeComponent implements OnInit {
 				});
 				break;
 			case 'DELETE':
-				this.deleteExistingUser(this.userId);
+				this.apiService.deleteUser(this.userId);
 				break;
 		}
 	}
 
-	getAllUsers() {
-		console.log('get all');
-		this.httpClient.get(this.apiUrl + '/users').subscribe(responseData => {
-			console.log(responseData);
-			if (responseData) {
-				this.users = responseData as { id: number; firstName: string; lastName: string; age: number }[];
-				this.cdr.detectChanges();
-			}
-		});
-	}
-
-	getExistingUser(userId: number) {
-		let selectedUser: { id: number; firstName: string; lastName: string; age: number };
-		this.httpClient.get(this.apiUrl + '/users/' + userId).subscribe(responseData => {
-			console.log(responseData);
-			if (responseData) {
-				selectedUser = responseData as { id: number; firstName: string; lastName: string; age: number };
-			}
-		});
-		return selectedUser;
-	}
-
-	createNewUser(newUser: { id: number; firstName: string; lastName: string; age: number }) {
-		this.httpClient.post(this.apiUrl + '/users', newUser).subscribe(responseData => {
-			console.log(responseData);
-			this.getAllUsers();
-		});
-	}
-
-	updateExistingUser(newUser: { id: number; firstName: string; lastName: string; age: number }) {
-		this.httpClient.put(this.apiUrl + '/users/' + newUser.id, newUser).subscribe(responseData => {
-			console.log(responseData);
-			this.getAllUsers();
-		});
-	}
-
-	deleteExistingUser(userId: number) {
-		this.httpClient.delete(this.apiUrl + '/users/' + userId).subscribe(responseData => {
-			console.log(responseData);
-			this.getAllUsers();
-		});
+	ngOnDestroy() {
+		this.responseSubscription.unsubscribe();
+		this.httpErrorSubscription.unsubscribe();
 	}
 }
-
-/**
- * Handle error cases when id doesn't exist or something
- */

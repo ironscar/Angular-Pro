@@ -1,7 +1,7 @@
 <div fxLayout='row' fxLayoutAlign='space-between start'>
 	<div fxFlex='45'>
 		<br>
-		<h2> Pipes {{moduleStatus | async}} </h2>
+		<h2> Pipes {{pipeStatus | async}} </h2>
 		<mat-form-field>
 			<mat-label>Property name</mat-label>
 			<input matInput type='text' [(ngModel)]='filterProp'>
@@ -38,7 +38,7 @@
 	</div>
 	<div fxFlex='45'>
 		<br>
-		<h2> Http Requests {{moduleStatus | async}} </h2>
+		<h2> Http Requests </h2>
 		<mat-form-field>
 			<mat-label>Request type</mat-label>
 			<mat-select [(ngModel)]='requestType'>
@@ -64,10 +64,16 @@
 			<input matInput type='number' [(ngModel)]='userAge'>
 		</mat-form-field>
 		<hr>
-		<div *ngFor='let user of users'>
-			<p style='padding: 1em; background-color: teal; color: white'>
-				User {{user.id}} is {{user.lastName}}, {{user.firstName}} and {{user.age}} years old.
-			</p>
+		<mat-spinner *ngIf='!moduleStatus'></mat-spinner>
+		<div *ngIf='errorMessage != null' style='background-color: darkred; color: white; padding: 1em'>
+			{{errorMessage | uppercase}}
+		</div>
+		<div *ngIf='moduleStatus'>
+			<div *ngFor='let user of users'>
+				<p style='padding: 1em; background-color: teal; color: white'>
+					User {{user.id}} is {{user.lastName}}, {{user.firstName}} and {{user.age}} years old.
+				</p>
+			</div>
 		</div>
 		<hr>
 		<button mat-raised-button color='primary' (click)='userFormFunctions()'>
