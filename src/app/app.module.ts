@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -38,6 +38,7 @@ import { FormComponent } from './dev/form/form.component';
 import { HttpPipeComponent } from './dev/http-pipe/http-pipe.component';
 import { ShortenPipe } from './dev/pipes/shorten.pipe';
 import { FilterPipe } from './dev/pipes/filter.pipe';
+import { AuthInterceptorService } from './dev/services/auth-interceptor.service';
 
 @NgModule({
 	declarations: [
@@ -83,7 +84,7 @@ import { FilterPipe } from './dev/pipes/filter.pipe';
 		MatProgressSpinnerModule,
 		HttpClientModule
 	],
-	providers: [],
+	providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }],
 	bootstrap: [AppComponent]
 })
 export class AppModule {}
