@@ -17,6 +17,13 @@ public class DemoController {
 	
 	private static List<User> users = new ArrayList<>();
 
+	/* 
+	 * implement a server secret key with RSA or HMAC to set up auth
+	 * https://www.geeksforgeeks.org/message-authentication-codes/?ref=lbp - Network Security
+	 * https://jwt.io/introduction/ - JSON web tokens
+	 */
+	private static List<AuthUser> authUsers = new ArrayList<>();
+
 	static {
 		users.add(new User(0, "Jake", "Hall", 12));
 		users.add(new User(1, "John", "Doe", 21));
@@ -73,6 +80,20 @@ class User {
 		this.firstName = fname;
 		this.lastName = lname;
 		this.age = age;
+	}
+
+}
+
+class AuthUser {
+
+	public int id;
+	public String username;
+	public String password;
+
+	public AuthUser(int id, String name, String pass) {
+		this.id = id;
+		this.username = name;
+		this.password = pass;
 	}
 
 }

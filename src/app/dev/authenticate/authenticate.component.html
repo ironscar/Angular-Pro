@@ -1,0 +1,20 @@
+<h2> Authentication page </h2>
+<form (ngSubmit)='onLoginSubmit()' #authForm='ngForm'>
+	<mat-form-field>
+		<mat-label> Username </mat-label>
+		<input matInput name='username' type='text' ngModel required>
+	</mat-form-field>
+	<br><br>
+	<mat-form-field>
+		<mat-label> Password </mat-label>
+		<input matInput name='password' type='password' ngModel required minlength='6'>
+	</mat-form-field>
+	<br><br>
+	<button mat-raised-button color='primary' type='submit' [disabled]='!authForm.valid'>
+		{{loginMode ? 'Sign in' : 'Sign up'}}
+	</button>
+	&nbsp;
+	<button mat-raised-button color='primary' type='button' (click)='onSwitchMode()'>
+		Switch to {{loginMode ? 'Sign up' : 'Sign in' }}
+	</button>
+</form>

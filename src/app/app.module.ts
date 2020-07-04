@@ -39,6 +39,7 @@ import { HttpPipeComponent } from './dev/http-pipe/http-pipe.component';
 import { ShortenPipe } from './dev/pipes/shorten.pipe';
 import { FilterPipe } from './dev/pipes/filter.pipe';
 import { AuthInterceptorService } from './dev/services/auth-interceptor.service';
+import { AuthenticateComponent } from './dev/authenticate/authenticate.component';
 
 @NgModule({
 	declarations: [
@@ -65,7 +66,8 @@ import { AuthInterceptorService } from './dev/services/auth-interceptor.service'
 		FormComponent,
 		HttpPipeComponent,
 		ShortenPipe,
-		FilterPipe
+		FilterPipe,
+		AuthenticateComponent
 	],
 	imports: [
 		BrowserModule,
