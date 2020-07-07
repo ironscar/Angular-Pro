@@ -8,8 +8,7 @@ import { BackendApiService } from '../services/backend-api.service';
 	selector: 'app-http-pipe',
 	templateUrl: './http-pipe.component.html',
 	styleUrls: ['./http-pipe.component.scss'],
-	changeDetection: ChangeDetectionStrategy.OnPush,
-	providers: [BackendApiService]
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HttpPipeComponent implements OnInit, OnDestroy {
 	// pipes members

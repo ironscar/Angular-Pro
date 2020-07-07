@@ -7,11 +7,67 @@ import { UserRecord } from '../http-pipe/user.interface';
 @Injectable()
 export class BackendApiService {
 	private apiUrl = 'http://localhost:8080';
+	private login = 'N';
 
+	loginSubject = new Subject<string>();
 	responseSubject = new Subject<{ type: string; users: UserRecord[] }>();
 	errorSubject = new Subject<string>();
 
 	constructor(private httpClient: HttpClient) {}
+
+	logOff() {
+		this.login = 'N';
+	}
+
+	addAuthUser(username: string, password: string) {
+		this.httpClient
+			.post(
+				this.apiUrl + '/register',
+				{ id: null, username, password },
+				{
+					responseType: 'text'
+				}
+			)
+			.subscribe(
+				responseData => {
+					if (responseData) {
+						console.log(responseData);
+						this.login = responseData;
+						this.loginSubject.next(this.login);
+					}
+				},
+				(error: HttpErrorResponse) => {
+					this.login = 'N';
+					this.loginSubject.next(this.login);
+					console.log(error);
+				}
+			);
+	}
+
+	getLoginStatus(username: string, password: string) {
+		this.httpClient
+			.post(
+				this.apiUrl + '/login',
+				{ id: null, username, password },
+				{
+					responseType: 'text'
+				}
+			)
+			.subscribe(
+				responseData => {
+					if (responseData) {
+						console.log(responseData);
+						this.login = responseData;
+						this.loginSubject.next(this.login);
+					}
+				},
+				(error: HttpErrorResponse) => {
+					this.login = 'N';
+					this.loginSubject.next(this.login);
+					console.log(error);
+				}
+			);
+	}
 
 	getAllUsers() {
 		// query params (immutable so reassign on return)
@@ -42,57 +98,89 @@ export class BackendApiService {
 	}
 
 	getExistingUser(userId: number) {
-		this.httpClient.get<UserRecord>(this.apiUrl + '/users/' + userId).subscribe(
-			responseData => {
-				console.log(responseData);
-				if (responseData) {
-					this.responseSubject.next({ type: 'one', users: [responseData] });
+		this.httpClient
+			.get<UserRecord>(this.apiUrl + '/users/' + userId, {
+				headers: new HttpHeaders({ loginUser: this.login })
+			})
+			.subscribe(
+				responseData => {
+					console.log(responseData);
+					if (responseData) {
+						this.responseSubject.next({ type: 'one', users: [responseData] });
+					}
+				},
+				(error: HttpErrorResponse) => {
+					console.log(error);
+					if (error.status === 401) {
+						this.errorSubject.next('UNAUTHORIZED');
+					} else {
+						this.errorSubject.next(error.statusText);
+					}
 				}
-			},
-			(error: HttpErrorResponse) => {
-				console.log(error);
-				this.errorSubject.next(error.statusText);
-			}
-		);
+			);
 	}
 
 	createNewUser(newUser: UserRecord) {
-		this.httpClient.post(this.apiUrl + '/users', newUser).subscribe(
-			responseData => {
-				console.log(responseData);
-				this.getAllUsers();
-			},
-			(error: HttpErrorResponse) => {
-				console.log(error);
-				this.errorSubject.next(error.statusText);
-			}
-		);
+		this.httpClient
+			.post(this.apiUrl + '/users', newUser, {
+				headers: new HttpHeaders({ loginUser: this.login })
+			})
+			.subscribe(
+				responseData => {
+					console.log(responseData);
+					this.getAllUsers();
+				},
+				(error: HttpErrorResponse) => {
+					console.log(error);
+					if (error.status === 401) {
+						this.errorSubject.next('UNAUTHORIZED');
+					} else {
+						this.errorSubject.next(error.statusText);
+					}
+				}
+			);
 	}
 
 	updateUser(newUser: UserRecord) {
-		this.httpClient.put(this.apiUrl + '/users/' + newUser.id, newUser).subscribe(
-			responseData => {
-				console.log(responseData);
-				this.getAllUsers();
-			},
-			(error: HttpErrorResponse) => {
-				console.log(error);
-				this.errorSubject.next(error.statusText);
-			}
-		);
+		this.httpClient
+			.put(this.apiUrl + '/users/' + newUser.id, newUser, {
+				headers: new HttpHeaders({ loginUser: this.login })
+			})
+			.subscribe(
+				responseData => {
+					console.log(responseData);
+					this.getAllUsers();
+				},
+				(error: HttpErrorResponse) => {
+					console.log(error);
+					if (error.status === 401) {
+						this.errorSubject.next('UNAUTHORIZED');
+					} else {
+						this.errorSubject.next(error.statusText);
+					}
+				}
+			);
 	}
 
 	deleteUser(userId: number) {
-		this.httpClient.delete(this.apiUrl + '/users/' + userId).subscribe(
-			responseData => {
-				console.log(responseData);
-				this.getAllUsers();
-			},
-			(error: HttpErrorResponse) => {
-				console.log(error);
-				this.errorSubject.next(error.statusText);
-			}
-		);
+		this.httpClient
+			.delete(this.apiUrl + '/users/' + userId, {
+				headers: new HttpHeaders({ loginUser: this.login })
+			})
+			.subscribe(
+				responseData => {
+					console.log(responseData);
+					this.getAllUsers();
+				},
+				(error: HttpErrorResponse) => {
+					console.log(error);
+					if (error.status === 401) {
+						this.errorSubject.next('UNAUTHORIZED');
+					} else {
+						this.errorSubject.next(error.statusText);
+					}
+				}
+			);
 	}
 }
 
@@ -104,4 +192,9 @@ export class BackendApiService {
  * Observe: 'events' returns HttpEventType types like sent/response/download progress etc
  * This can be accessed by using rxjs operator 'tap' and piping it before subscribe
  * Can configure responseType as 'text' for string or 'blob' for files, default is 'json'
+ *
+ * Login value should be sent in header to backend for all except getAllUsers to validate
+ * Block them if login value is 'N' and allow if not in back-end
+ * Return unauthorized if accessing other APIs without login
+ * Register user updates authUsers in back-end and checks for duplicate usernames
  */

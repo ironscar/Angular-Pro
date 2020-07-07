@@ -65,9 +65,9 @@
 		</mat-form-field>
 		<hr>
 		<mat-spinner *ngIf='!moduleStatus'></mat-spinner>
-		<div *ngIf='errorMessage != null' style='background-color: darkred; color: white; padding: 1em'>
+		<p *ngIf='errorMessage != null' style='background-color: darkred; color: white; padding: 1em'>
 			{{errorMessage | uppercase}}
-		</div>
+		</p>
 		<div *ngIf='moduleStatus'>
 			<div *ngFor='let user of users'>
 				<p style='padding: 1em; background-color: teal; color: white'>

@@ -40,6 +40,7 @@ import { ShortenPipe } from './dev/pipes/shorten.pipe';
 import { FilterPipe } from './dev/pipes/filter.pipe';
 import { AuthInterceptorService } from './dev/services/auth-interceptor.service';
 import { AuthenticateComponent } from './dev/authenticate/authenticate.component';
+import { BackendApiService } from './dev/services/backend-api.service';
 
 @NgModule({
 	declarations: [
@@ -86,7 +87,7 @@ import { AuthenticateComponent } from './dev/authenticate/authenticate.component
 		MatProgressSpinnerModule,
 		HttpClientModule
 	],
-	providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }],
+	providers: [BackendApiService, { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }],
 	bootstrap: [AppComponent]
 })
 export class AppModule {}

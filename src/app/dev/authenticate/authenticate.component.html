@@ -1,5 +1,11 @@
 <h2> Authentication page </h2>
 <form (ngSubmit)='onLoginSubmit()' #authForm='ngForm'>
+	<p *ngIf='loginStatus && loginStatus === "N"' style='background-color: darkred; color: white; padding: 1em'>
+		{{ loginMode ? 'Incorrect Username of password' : 'Duplicate username exists'}}
+	</p>
+	<p *ngIf='loginStatus && loginStatus !== "N"' style='background-color: teal; color: white; padding: 1em'>
+		Welcome {{loginStatus}}
+	</p>
 	<mat-form-field>
 		<mat-label> Username </mat-label>
 		<input matInput name='username' type='text' ngModel required>
@@ -10,11 +16,17 @@
 		<input matInput name='password' type='password' ngModel required minlength='6'>
 	</mat-form-field>
 	<br><br>
-	<button mat-raised-button color='primary' type='submit' [disabled]='!authForm.valid'>
+	<button mat-raised-button color='primary' type='submit'
+		[disabled]='!authForm.valid || (loginStatus && loginStatus !== "N")'>
 		{{loginMode ? 'Sign in' : 'Sign up'}}
 	</button>
 	&nbsp;
 	<button mat-raised-button color='primary' type='button' (click)='onSwitchMode()'>
 		Switch to {{loginMode ? 'Sign up' : 'Sign in' }}
+	</button>
+	&nbsp;
+	<button mat-raised-button color='primary' type='button' (click)='onLogOff()'
+		[disabled]='loginStatus === "N" || loginStatus === null'>
+		Log Off
 	</button>
 </form>
