@@ -23,3 +23,9 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
 		return this.canActivate(route, state);
 	}
 }
+
+/**
+ * Can return UrlTree or Observable<boolean | UrlTree> to automatically redirect
+ * Better not to redirect manually here as it may create race conditions
+ * Its done as this.router.createUrlTree(['/auth']);
+ */

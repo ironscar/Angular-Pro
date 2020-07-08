@@ -22,8 +22,10 @@ export class AuthenticateComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 		this.loginSubscription = this.apiService.loginSubject.subscribe(data => {
 			this.loginStatus = data;
+			console.log(data);
 			this.cdr.detectChanges();
 		});
+		this.apiService.setLoginOnLoad();
 	}
 
 	onSwitchMode() {
@@ -52,4 +54,5 @@ export class AuthenticateComponent implements OnInit, OnDestroy {
 
 /**
  * Log in disabled if already logged in
+ * get from local storage with setLoginOnLoad after subscription so as to update status with subject
  */

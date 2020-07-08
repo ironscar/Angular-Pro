@@ -15,8 +15,33 @@ export class BackendApiService {
 
 	constructor(private httpClient: HttpClient) {}
 
+	setLoginOnLoad() {
+		const localLogin = localStorage.getItem('loginUser');
+		const lastLoginDate = localStorage.getItem('loginDate');
+		if (localLogin && lastLoginDate) {
+			const lastNumberDate = Number(lastLoginDate);
+			const currentDate = new Date().getTime();
+			if (currentDate - lastNumberDate <= 10000) {
+				this.login = localLogin;
+				this.loginSubject.next(this.login);
+				localStorage.setItem('loginDate', '' + currentDate);
+			} else {
+				localStorage.removeItem('loginUser');
+				localStorage.removeItem('loginDate');
+			}
+		}
+	}
+
+	setLocalLoginDetails() {
+		localStorage.setItem('loginUser', this.login);
+		const lastLoginDate = new Date().getTime();
+		localStorage.setItem('loginDate', '' + lastLoginDate);
+	}
+
 	logOff() {
 		this.login = 'N';
+		localStorage.removeItem('loginUser');
+		localStorage.removeItem('loginDate');
 	}
 
 	addAuthUser(username: string, password: string) {
@@ -33,6 +58,7 @@ export class BackendApiService {
 					if (responseData) {
 						console.log(responseData);
 						this.login = responseData;
+						this.setLocalLoginDetails();
 						this.loginSubject.next(this.login);
 					}
 				},
@@ -58,6 +84,7 @@ export class BackendApiService {
 					if (responseData) {
 						console.log(responseData);
 						this.login = responseData;
+						this.setLocalLoginDetails();
 						this.loginSubject.next(this.login);
 					}
 				},
@@ -197,4 +224,9 @@ export class BackendApiService {
  * Block them if login value is 'N' and allow if not in back-end
  * Return unauthorized if accessing other APIs without login
  * Register user updates authUsers in back-end and checks for duplicate usernames
+ *
+ * localStorage is used to store the login details so that its persistent across load
+ * Access this in Application tab of browser devtools
+ * Added last login date to local storage which updates on login if reload within 10 seconds
+ * Otherwise, both are removed from local storage but while app is on, there is no auto logoff
  */
