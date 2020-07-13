@@ -1,0 +1,6 @@
+<h2>Dynamic Components</h2>
+<app-dynamic-alert *ngIf='showAlert' [message]='alertMessage' (emitClose)='onEmitClose()'></app-dynamic-alert>
+<button mat-raised-button color='primary' (click)='toggleAlert()'>Generate alert 1</button>
+<br><br>
+<ng-template appPlaceholder></ng-template>
+<button mat-raised-button color='primary' (click)='generateProgrammaticAlert()'>Generate alert 2</button>

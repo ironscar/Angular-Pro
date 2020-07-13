@@ -41,6 +41,9 @@ import { FilterPipe } from './dev/pipes/filter.pipe';
 import { AuthInterceptorService } from './dev/services/auth-interceptor.service';
 import { AuthenticateComponent } from './dev/authenticate/authenticate.component';
 import { BackendApiService } from './dev/services/backend-api.service';
+import { DynamicComponent } from './dev/dynamic/dynamic.component';
+import { DynamicAlertComponent } from './dev/dynamic/dynamic-alert/dynamic-alert.component';
+import { PlaceholderDirective } from './dev/directives/placeholder/placeholder.directive';
 
 @NgModule({
 	declarations: [
@@ -68,7 +71,10 @@ import { BackendApiService } from './dev/services/backend-api.service';
 		HttpPipeComponent,
 		ShortenPipe,
 		FilterPipe,
-		AuthenticateComponent
+		AuthenticateComponent,
+		DynamicComponent,
+		DynamicAlertComponent,
+		PlaceholderDirective
 	],
 	imports: [
 		BrowserModule,
