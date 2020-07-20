@@ -23,10 +23,13 @@ export class MainComponent implements OnInit {
 		if (queryParamTab) {
 			this.tabIndex = queryParamTab;
 		}
-		// get hash params (can be firs time or reactive subscription as before)
+		// get hash params (can be first time or reactive subscription as before)
 		const hashTab = this.route.snapshot.fragment;
 		if (hashTab) {
 			this.tabIndex = Number(hashTab.split('=')[1]);
+		}
+		if (!this.tabIndex) {
+			this.tabIndex = 0;
 		}
 
 		this.shoppingService.recipeIngredsAdded.subscribe(() => {

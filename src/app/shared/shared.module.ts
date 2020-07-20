@@ -50,3 +50,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 	]
 })
 export class SharedModule {}
+
+/**
+ * Can declare a component only once and then import across other modules
+ */
