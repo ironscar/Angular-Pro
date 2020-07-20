@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AuthLoginService } from '../dev/services/auth-login.servce';
+import { AuthLoginService } from '../services/auth-login.servce';
 
 @Component({
 	selector: 'app-home',

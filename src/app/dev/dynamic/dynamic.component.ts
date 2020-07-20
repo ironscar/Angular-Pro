@@ -49,7 +49,9 @@ export class DynamicComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
-		this.dynamicAlertSubscription.unsubscribe();
+		if (this.dynamicAlertSubscription) {
+			this.dynamicAlertSubscription.unsubscribe();
+		}
 	}
 }
 

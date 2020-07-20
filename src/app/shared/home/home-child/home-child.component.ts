@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CanComponentDeactivate } from 'src/app/dev/services/can-deactivate-guard.service';
+import { CanComponentDeactivate } from '../../services/can-deactivate-guard.service';
 
 @Component({
 	selector: 'app-home-child',
