@@ -3,8 +3,14 @@ import { Routes, RouterModule } from '@angular/router';
 import { DevComponent } from './dev.component';
 
 const routes: Routes = [
-	{ component: DevComponent, path: 'dev' },
-	{ component: DevComponent, path: 'dev/:id' }
+	{
+		path: '',
+		component: DevComponent,
+		children: [
+			{ component: DevComponent, path: '' },
+			{ component: DevComponent, path: ':id' }
+		]
+	}
 ];
 
 @NgModule({

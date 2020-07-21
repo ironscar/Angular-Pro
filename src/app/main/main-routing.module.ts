@@ -3,8 +3,14 @@ import { Routes, RouterModule } from '@angular/router';
 import { MainComponent } from './main.component';
 
 const routes: Routes = [
-	{ component: MainComponent, path: 'main' },
-	{ component: MainComponent, path: 'main/:id' }
+	{
+		path: '',
+		component: MainComponent,
+		children: [
+			{ component: MainComponent, path: '' },
+			{ component: MainComponent, path: ':id' }
+		]
+	}
 ];
 
 @NgModule({
@@ -12,3 +18,8 @@ const routes: Routes = [
 	exports: [RouterModule]
 })
 export class MainRoutingModule {}
+
+/**
+ * Main Module is loaded lazily and so everything here should be child routes of main
+ * Don't include 'main' as part of path anymore
+ */

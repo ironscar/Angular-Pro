@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { MainRoutingModule } from './main-routing.module';
@@ -24,6 +23,6 @@ import { RecipeEditComponent } from './recipe-list/recipe-edit/recipe-edit.compo
 		RecipeListComponent,
 		DropdownDirective
 	],
-	imports: [BrowserAnimationsModule, CommonModule, MainRoutingModule, SharedModule]
+	imports: [CommonModule, MainRoutingModule, SharedModule]
 })
 export class MainModule {}

@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { DevRoutingModule } from './dev-routing.module';
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServerComponent } from './server/server.component';
 import { ProfileComponent } from './profile/profile.component';
 import { DevComponent } from './dev.component';
@@ -43,12 +42,21 @@ import { PlaceholderDirective } from './directives/placeholder/placeholder.direc
 		DynamicAlertComponent,
 		PlaceholderDirective
 	],
-	imports: [BrowserAnimationsModule, CommonModule, HttpClientModule, DevRoutingModule, SharedModule],
+	imports: [CommonModule, HttpClientModule, DevRoutingModule, SharedModule],
 	providers: [BackendApiService, { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }]
 })
 export class DevModule {}
 
 /**
- * Services can work across multiple modules but everything else is module specific
  * Those components/directives/pipes must be exported to be used by other modules
+ * Services can work across multiple modules but everything else is module specific
+ * In lazy loaded module, the service has one instance only in that module
+ * If same service added into app module, then lazy loaded module will have a separate instance
+ * In eager loaded module or app module, service has one instance across application
+ * Services in component are available to all children thereof
+ * Injectable providedIn root is same as adding it to app module providers
+ * Ideally add services to app module only unless different instances are needed
+ * If shared module is eagerly loaded inside an eagerly loaded and a lazy loaded module,
+ * then services in both are still different instances due to the lazy loaded module
+ * To get same instance of services across lazy and eager modules, add them to app module
  */

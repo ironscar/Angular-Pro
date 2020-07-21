@@ -10,7 +10,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedRoutingModule } from './shared-routing.module';
 
 import { HomeComponent } from './home/home.component';
@@ -21,7 +20,6 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 	declarations: [HomeComponent, HomeChildComponent, PageNotFoundComponent],
 	imports: [
 		CommonModule,
-		BrowserAnimationsModule,
 		FormsModule,
 		ReactiveFormsModule,
 		FlexLayoutModule,
@@ -53,4 +51,5 @@ export class SharedModule {}
 
 /**
  * Can declare a component only once and then import across other modules
+ * Common Module includes ngIf and ngFor directives
  */
