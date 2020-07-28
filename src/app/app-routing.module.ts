@@ -5,6 +5,8 @@ const routes: Routes = [
 	{ path: '', redirectTo: 'dev', pathMatch: 'full' },
 	{ path: 'dev', loadChildren: () => import('./dev/dev.module').then(m1 => m1.DevModule) },
 	{ path: 'main', loadChildren: () => import('./main/main.module').then(m2 => m2.MainModule) },
+	{ path: 'first-store', loadChildren: () => import('./first-store/first-store.module').then(m3 => m3.FirstStoreModule) },
+	{ path: 'second-store', loadChildren: () => import('./second-store/second-store.module').then(m4 => m4.SecondStoreModule) },
 	{ path: '**', redirectTo: 'not-found' }
 ];
 
