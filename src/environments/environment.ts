@@ -4,6 +4,7 @@
 
 export const environment = {
 	production: false,
+	development: true,
 	logAlertMessage: 'create alert dev'
 };
 

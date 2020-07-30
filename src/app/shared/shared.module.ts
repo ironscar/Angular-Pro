@@ -10,6 +10,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+
 import { SharedRoutingModule } from './shared-routing.module';
 
 import { HomeComponent } from './home/home.component';
@@ -40,6 +42,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 		MatTabsModule,
 		MatCardModule,
 		MatButtonModule,
+		MatIconModule,
 		MatInputModule,
 		MatFormFieldModule,
 		MatSelectModule,
