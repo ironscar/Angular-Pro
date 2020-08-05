@@ -1,0 +1,23 @@
+<mat-card style='margin-right: 16px; margin-bottom: 16px; width: 250px'>
+	<mat-card-content fxLayout='column'>
+		<div fxFlex='100' fxLayout='row' fxLayoutAlign='space-between'>
+			<h2>
+				{{storeRecipe.recipeName}}
+			</h2>
+			<button mat-icon-button (click)='onDeleteRecipe()'>
+				<mat-icon>delete</mat-icon>
+			</button>
+		</div>
+		<p>{{storeRecipe.recipeDescription}}</p>
+		<strong> Ingredients </strong>
+		<ul>
+			<li *ngFor='let ingredient of storeRecipe.ingredients; let j = index'>
+				{{ingredient.ingredientName}} (X{{ingredient.ingredientQuantity}})
+			</li>
+		</ul>
+	</mat-card-content>
+	<mat-card-actions>
+		<button mat-button (click)='onEditRecipe()'> EDIT </button>
+		<button mat-button (click)='onDuplicateRecipe()'> DUPLICATE </button>
+	</mat-card-actions>
+</mat-card>

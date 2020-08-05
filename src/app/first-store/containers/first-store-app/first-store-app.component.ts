@@ -1,10 +1,13 @@
 import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 
 import { StoreRecipe } from '../../first-store.models';
 import { State } from 'src/app/reducers';
-import { Subscription } from 'rxjs';
+import * as FirstStoreActions from '../../actions/first-store.actions';
 import { getStoredRecipes } from '../../selectors/first-store.selectors';
+import { RecipeEditDialogComponent } from '../../components/recipe-edit-dialog/recipe-edit-dialog.component';
 
 @Component({
 	selector: 'app-first-store',
@@ -13,11 +16,13 @@ import { getStoredRecipes } from '../../selectors/first-store.selectors';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FirstStoreAppComponent implements OnInit, OnDestroy {
+	private creatingNewRecipe = false;
+	private editingNewRecipe = false;
 	private recipeSubscription: Subscription;
 
 	recipeList: StoreRecipe[] = [];
 
-	constructor(private store: Store<State>) {
+	constructor(private store: Store<State>, private dialog: MatDialog) {
 		this.recipeSubscription = this.store.select(getStoredRecipes).subscribe(firstStoreData => {
 			this.recipeList = firstStoreData;
 		});
@@ -25,11 +30,42 @@ export class FirstStoreAppComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {}
 
-	onEditRecipe() {}
+	onNewRecipe() {
+		this.creatingNewRecipe = true;
+		const dialogRef = this.dialog.open(RecipeEditDialogComponent, {
+			height: '400px',
+			width: '600px',
+			data: {
+				isEditingRecipe: false
+			}
+		});
+		dialogRef.afterClosed().subscribe((result: StoreRecipe) => {
+			console.log('new dialog result:', result);
+		});
+	}
 
-	onDuplicateRecipe() {}
+	onEditRecipe(recipeIndex: number) {
+		this.editingNewRecipe = true;
+		const dialogRef = this.dialog.open(RecipeEditDialogComponent, {
+			height: '400px',
+			width: '600px',
+			data: {
+				isEditingRecipe: true,
+				editableRecipe: this.recipeList[recipeIndex]
+			}
+		});
+		dialogRef.afterClosed().subscribe((result: StoreRecipe) => {
+			console.log('edit dialog result:', result);
+		});
+	}
 
-	onDeleteRecipe() {}
+	onDuplicateRecipe(recipeIndex: number) {
+		this.store.dispatch(new FirstStoreActions.DuplicateStoreRecipe(recipeIndex));
+	}
+
+	onDeleteRecipe(recipeIndex: number) {
+		this.store.dispatch(new FirstStoreActions.DeleteStoreRecipe(recipeIndex));
+	}
 
 	ngOnDestroy() {
 		this.recipeSubscription.unsubscribe();

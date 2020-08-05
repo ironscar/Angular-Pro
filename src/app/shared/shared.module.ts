@@ -11,6 +11,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatStepperModule } from '@angular/material/stepper';
 
 import { SharedRoutingModule } from './shared-routing.module';
 
@@ -32,6 +34,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 		MatFormFieldModule,
 		MatSelectModule,
 		MatRadioModule,
+		MatDialogModule,
+		MatStepperModule,
 		MatProgressSpinnerModule,
 		SharedRoutingModule
 	],
@@ -47,7 +51,9 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 		MatFormFieldModule,
 		MatSelectModule,
 		MatRadioModule,
-		MatProgressSpinnerModule
+		MatProgressSpinnerModule,
+		MatDialogModule,
+		MatStepperModule
 	]
 })
 export class SharedModule {}
