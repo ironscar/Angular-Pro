@@ -2,10 +2,13 @@ import { Action } from '@ngrx/store';
 import { StoreRecipe } from '../first-store.models';
 
 export enum FirstStoreActionTypes {
+	// standard actions
 	NewStoreRecipe = '[First Store] New Store Recipe',
 	EditStoreRecipe = '[First Store] Edit Store Recipe',
 	DuplicateStoreRecipe = '[First Store] Duplicate Store Recipe',
-	DeleteStoreRecipe = '[First Store] Delete Store Recipe'
+	DeleteStoreRecipe = '[First Store] Delete Store Recipe',
+	// effect actions
+	FirstStoreApiStart = '[First Store] API Start'
 }
 
 export class NewStoreRecipe implements Action {
@@ -29,3 +32,8 @@ export class DeleteStoreRecipe implements Action {
 }
 
 export type FirstStoreActions = NewStoreRecipe | EditStoreRecipe | DuplicateStoreRecipe | DeleteStoreRecipe;
+
+/**
+ * The action types should be unique as they are forwarded to all reducers and not just first store reducer
+ * So we prefix it with the module name
+ */

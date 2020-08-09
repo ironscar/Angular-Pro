@@ -11,10 +11,15 @@ export const initialState: State = { recipeList: INITIAL_RECIPE_STORE_LIST };
 export function reducer(state = initialState, action: FirstStoreActions) {
 	switch (action.type) {
 		case FirstStoreActionTypes.NewStoreRecipe: {
-			return { ...state };
+			const newState = { ...state };
+			newState.recipeList = [...state.recipeList, action.newRecipe];
+			return newState;
 		}
 		case FirstStoreActionTypes.EditStoreRecipe: {
-			return { ...state };
+			const newState = { ...state };
+			newState.recipeList = [...state.recipeList];
+			newState.recipeList[action.indexToEdit] = action.editedRecipe;
+			return newState;
 		}
 		case FirstStoreActionTypes.DuplicateStoreRecipe: {
 			const newState = { ...state };
@@ -38,4 +43,5 @@ export function reducer(state = initialState, action: FirstStoreActions) {
 /**
  * Give it some initial state and populate in first-store
  * Splice returns removed item and removes specified item from original array
+ * Async code in reducer will break the reducer and musn't be done
  */

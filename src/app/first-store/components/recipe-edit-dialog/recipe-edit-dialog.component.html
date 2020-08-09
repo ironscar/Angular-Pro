@@ -1,8 +1,62 @@
 <h3> New/Edit Recipe </h3>
-<span>{{storeRecipe.recipeName}}</span><br><br>
-<span>{{storeRecipe.recipeDescription}}</span><br><br>
-<button mat-button (click)='onCloseDialog()'>Save</button>
+<mat-horizontal-stepper #stepper>
+	<mat-step [stepControl]='firstFormGroup'>
+		<form [formGroup]='firstFormGroup'>
+			<ng-template matStepLabel> Edit recipe name </ng-template>
+			<mat-form-field>
+				<mat-label> Recipe name </mat-label>
+				<input matInput formControlName='recipeNameCtrl' required>
+			</mat-form-field>
+			<div>
+				<button mat-button matStepperNext>Next</button>
+				<button mat-button (click)='onCloseDialog()'>Cancel</button>
+			</div>
+		</form>
+	</mat-step>
 
-<!-- 
-	add mat-horizontal-stepper here to provide information for each part of the recipe
- -->
+	<mat-step [stepControl]='secondFormGroup'>
+		<form [formGroup]='secondFormGroup'>
+			<ng-template matStepLabel> Edit description </ng-template>
+			<mat-form-field>
+				<mat-label> Recipe description </mat-label>
+				<input matInput formControlName='recipeDescCtrl' required>
+			</mat-form-field>
+			<div>
+				<button mat-button matStepperPrevious>Back</button>
+				<button mat-button matStepperNext>Next</button>
+				<button mat-button (click)='onCloseDialog()'>Cancel</button>
+			</div>
+		</form>
+	</mat-step>
+
+	<mat-step [stepControl]='thirdFormGroup' #stepper>
+		<form [formGroup]='thirdFormGroup'>
+			<ng-template matStepLabel> Edit ingredients </ng-template>
+			<mat-form-field>
+				<mat-label> Ingredient name </mat-label>
+				<input matInput formControlName='ingred1NameCtrl' required>
+			</mat-form-field>
+			&nbsp;
+			<mat-form-field>
+				<mat-label> Ingredient amount </mat-label>
+				<input matInput type='number' formControlName='ingred1AmountCtrl' required>
+			</mat-form-field>
+			<br><br>
+			<mat-form-field>
+				<mat-label> Ingredient name </mat-label>
+				<input matInput formControlName='ingred2NameCtrl' required>
+			</mat-form-field>
+			&nbsp;
+			<mat-form-field>
+				<mat-label> Ingredient amount </mat-label>
+				<input matInput type='number' formControlName='ingred2AmountCtrl' required>
+			</mat-form-field>
+			<div>
+				<button mat-button matStepperPrevious>Back</button>
+				<button mat-button (click)='onSubmitDialog()'>Save</button>
+				<button mat-button (click)='onCloseDialog()'>Cancel</button>
+			</div>
+		</form>
+	</mat-step>
+
+</mat-horizontal-stepper>
