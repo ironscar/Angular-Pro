@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { StoreRecipe } from '../first-store.models';
+import { StoreRecipe, StoreUser } from '../first-store.models';
 
 export enum FirstStoreActionTypes {
 	// standard actions
@@ -7,6 +7,8 @@ export enum FirstStoreActionTypes {
 	EditStoreRecipe = '[First Store] Edit Store Recipe',
 	DuplicateStoreRecipe = '[First Store] Duplicate Store Recipe',
 	DeleteStoreRecipe = '[First Store] Delete Store Recipe',
+	FirstStoreApiError = '[First Store] API Error',
+	FirstStoreApiSuccess = '[First Store] API Success',
 	// effect actions
 	FirstStoreApiStart = '[First Store] API Start'
 }
@@ -31,7 +33,29 @@ export class DeleteStoreRecipe implements Action {
 	constructor(public indexToDelete: number) {}
 }
 
-export type FirstStoreActions = NewStoreRecipe | EditStoreRecipe | DuplicateStoreRecipe | DeleteStoreRecipe;
+export class FirstStoreApiStart implements Action {
+	readonly type = FirstStoreActionTypes.FirstStoreApiStart;
+	constructor(public user: StoreUser) {}
+}
+
+export class FirstStoreApiError implements Action {
+	readonly type = FirstStoreActionTypes.FirstStoreApiError;
+	constructor(public error: string) {}
+}
+
+export class FirstStoreApiSuccess implements Action {
+	readonly type = FirstStoreActionTypes.FirstStoreApiSuccess;
+	constructor(public loggedInUsername: string) {}
+}
+
+export type FirstStoreActions =
+	| NewStoreRecipe
+	| EditStoreRecipe
+	| DuplicateStoreRecipe
+	| DeleteStoreRecipe
+	| FirstStoreApiStart
+	| FirstStoreApiError
+	| FirstStoreApiSuccess;
 
 /**
  * The action types should be unique as they are forwarded to all reducers and not just first store reducer

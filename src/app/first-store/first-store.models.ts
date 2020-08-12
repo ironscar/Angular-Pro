@@ -9,6 +9,11 @@ export interface StoreRecipe {
 	ingredients: StoreIngredient[];
 }
 
+export interface StoreUser {
+	username: string;
+	password: string;
+}
+
 /**
  * store all models per module (follow CTA structure)
  */

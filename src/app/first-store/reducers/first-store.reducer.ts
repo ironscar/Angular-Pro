@@ -3,10 +3,11 @@ import { INITIAL_RECIPE_STORE_LIST } from '../first-store.constants';
 import { FirstStoreActionTypes, FirstStoreActions } from '../actions/first-store.actions';
 
 export interface State {
+	loggedInUser: string;
 	recipeList: StoreRecipe[];
 }
 
-export const initialState: State = { recipeList: INITIAL_RECIPE_STORE_LIST };
+export const initialState: State = { loggedInUser: 'UNDEF', recipeList: INITIAL_RECIPE_STORE_LIST };
 
 export function reducer(state = initialState, action: FirstStoreActions) {
 	switch (action.type) {
@@ -33,6 +34,16 @@ export function reducer(state = initialState, action: FirstStoreActions) {
 			const newRecipes = [...state.recipeList];
 			newRecipes.splice(action.indexToDelete, 1);
 			newState.recipeList = newRecipes;
+			return newState;
+		}
+		case FirstStoreActionTypes.FirstStoreApiError: {
+			const newState = { ...state };
+			newState.loggedInUser = action.error;
+			return newState;
+		}
+		case FirstStoreActionTypes.FirstStoreApiSuccess: {
+			const newState = { ...state };
+			newState.loggedInUser = action.loggedInUsername;
 			return newState;
 		}
 		default:
