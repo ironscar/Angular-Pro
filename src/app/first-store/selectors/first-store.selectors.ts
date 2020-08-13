@@ -7,6 +7,8 @@ export const getStoredRecipes = createSelector(getFirstStoreState, state => stat
 
 export const getLoggedInUsername = createSelector(getFirstStoreState, state => state.loggedInUser);
 
+export const getApiCallStatus = createSelector(getFirstStoreState, state => state.callingApi);
+
 /**
  * All the ways data can be selected from containers (like in CTA)
  */

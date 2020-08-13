@@ -7,10 +7,9 @@ export enum FirstStoreActionTypes {
 	EditStoreRecipe = '[First Store] Edit Store Recipe',
 	DuplicateStoreRecipe = '[First Store] Duplicate Store Recipe',
 	DeleteStoreRecipe = '[First Store] Delete Store Recipe',
+	FirstStoreApiStart = '[First Store] API Start',
 	FirstStoreApiError = '[First Store] API Error',
-	FirstStoreApiSuccess = '[First Store] API Success',
-	// effect actions
-	FirstStoreApiStart = '[First Store] API Start'
+	FirstStoreApiSuccess = '[First Store] API Success'
 }
 
 export class NewStoreRecipe implements Action {

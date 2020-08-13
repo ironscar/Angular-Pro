@@ -4,10 +4,11 @@ import { FirstStoreActionTypes, FirstStoreActions } from '../actions/first-store
 
 export interface State {
 	loggedInUser: string;
+	callingApi: boolean;
 	recipeList: StoreRecipe[];
 }
 
-export const initialState: State = { loggedInUser: 'UNDEF', recipeList: INITIAL_RECIPE_STORE_LIST };
+export const initialState: State = { loggedInUser: 'UNDEF', callingApi: false, recipeList: INITIAL_RECIPE_STORE_LIST };
 
 export function reducer(state = initialState, action: FirstStoreActions) {
 	switch (action.type) {
@@ -36,14 +37,21 @@ export function reducer(state = initialState, action: FirstStoreActions) {
 			newState.recipeList = newRecipes;
 			return newState;
 		}
+		case FirstStoreActionTypes.FirstStoreApiStart: {
+			const newState = { ...state };
+			newState.callingApi = true;
+			return newState;
+		}
 		case FirstStoreActionTypes.FirstStoreApiError: {
 			const newState = { ...state };
 			newState.loggedInUser = action.error;
+			newState.callingApi = false;
 			return newState;
 		}
 		case FirstStoreActionTypes.FirstStoreApiSuccess: {
 			const newState = { ...state };
 			newState.loggedInUser = action.loggedInUsername;
+			newState.callingApi = false;
 			return newState;
 		}
 		default:
@@ -55,4 +63,7 @@ export function reducer(state = initialState, action: FirstStoreActions) {
  * Give it some initial state and populate in first-store
  * Splice returns removed item and removes specified item from original array
  * Async code in reducer will break the reducer and musn't be done
+ * Actions which are handled in effects are not required in the reducer
+ * However, if you need to update the state, you may have it in the reducer
+ * Here loginStart isn't required but we update the callingApi telling you when call is made and finished
  */

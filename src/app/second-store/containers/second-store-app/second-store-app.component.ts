@@ -11,3 +11,7 @@ export class SecondStoreAppComponent implements OnInit {
 
 	ngOnInit() {}
 }
+
+/**
+ * Set up second store module using global state and doing some extra things
+ */

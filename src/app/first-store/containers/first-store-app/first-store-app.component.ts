@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { StoreRecipe, StoreUser } from '../../first-store.models';
 import { State } from 'src/app/reducers';
 import * as FirstStoreActions from '../../actions/first-store.actions';
-import { getStoredRecipes, getLoggedInUsername } from '../../selectors/first-store.selectors';
+import { getStoredRecipes, getLoggedInUsername, getApiCallStatus } from '../../selectors/first-store.selectors';
 import { RecipeEditDialogComponent } from '../../components/recipe-edit-dialog/recipe-edit-dialog.component';
 
 @Component({
@@ -16,25 +16,32 @@ import { RecipeEditDialogComponent } from '../../components/recipe-edit-dialog/r
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FirstStoreAppComponent implements OnInit, OnDestroy {
-	private recipeSubscription: Subscription;
-	private loginSubscription: Subscription;
+	private storeSubscriptions: Subscription[];
 
 	username: string;
+	currentCallStatus: boolean;
 	recipeList: StoreRecipe[] = [];
 
 	constructor(private store: Store<State>, private dialog: MatDialog, private cdr: ChangeDetectorRef) {}
 
 	ngOnInit() {
-		this.recipeSubscription = this.store.select(getStoredRecipes).subscribe(firstStoreData => {
-			this.recipeList = firstStoreData;
-			this.cdr.detectChanges();
-		});
+		this.storeSubscriptions = [
+			this.store.select(getStoredRecipes).subscribe(firstStoreData => {
+				this.recipeList = firstStoreData;
+				this.cdr.detectChanges();
+			}),
 
-		this.loginSubscription = this.store.select(getLoggedInUsername).subscribe(user => {
-			// use detectChanges if required though it seems that's not needed as its a simple string
-			console.log(user);
-			this.username = user;
-		});
+			this.store.select(getLoggedInUsername).subscribe(user => {
+				this.username = user;
+				this.cdr.detectChanges();
+			}),
+
+			this.store.select(getApiCallStatus).subscribe(status => {
+				// use ths flag to know when api call is happening
+				this.currentCallStatus = status;
+				this.cdr.detectChanges();
+			})
+		];
 	}
 
 	onStoreAPILogin() {
@@ -48,7 +55,7 @@ export class FirstStoreAppComponent implements OnInit, OnDestroy {
 		if (!this.username || this.username === 'UNDEF' || this.username === 'N') {
 			this.store.dispatch(new FirstStoreActions.FirstStoreApiStart(loginUser));
 		} else {
-			console.log('user already logged in so no api call made, reload page/module to see effects feature');
+			console.log('user already logged in so no api call made, reload page to see effects feature');
 		}
 	}
 
@@ -92,8 +99,7 @@ export class FirstStoreAppComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
-		this.recipeSubscription.unsubscribe();
-		this.loginSubscription.unsubscribe();
+		this.storeSubscriptions.map(sub => sub.unsubscribe());
 	}
 }
 /**

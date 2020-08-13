@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, Effect } from '@ngrx/effects';
 import { HttpClient } from '@angular/common/http';
-import { switchMap, map, catchError } from 'rxjs/operators';
+import { switchMap, map, catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 import * as FirstStoreActions from '../actions/first-store.actions';
@@ -43,6 +43,20 @@ export class FirstStoreEffects {
 				);
 		})
 	);
+
+	@Effect({ dispatch: false })
+	firstStoreApiComplete = this.actions$.pipe(
+		ofType(FirstStoreActions.FirstStoreActionTypes.FirstStoreApiSuccess, FirstStoreActions.FirstStoreActionTypes.FirstStoreApiError),
+		tap(() => {
+			// do something but not dispatch another action to show off dispatch false
+			if (localStorage.getItem('effectData') === 'even run') {
+				localStorage.setItem('effectData', 'odd run');
+			} else {
+				localStorage.setItem('effectData', 'even run');
+			}
+			console.log('api ended and updated local storage in Applications tab');
+		})
+	);
 }
 
 /**
@@ -60,4 +74,5 @@ export class FirstStoreEffects {
  * It won't work if HttpClientModule is in the feature module and not in root module where effects module is
  * map could return an http response directly as its already an observable, if its not, use of() as done in catchError
  * Don't send the http observable as another observable inside map though as that breaks things
+ * If an effect doesn't dispatch another action, add {dispatch: false} to effects decorator else it will create an infinite loop & break
  */

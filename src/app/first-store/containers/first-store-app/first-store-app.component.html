@@ -1,7 +1,11 @@
 <div fxLayout='row' fxLayoutAlign='center start'>
 	<mat-card fxFlex='90'>
 		<mat-card-header>
-			<mat-card-title> First Store Module </mat-card-title>
+			<mat-card-title>
+				First Store Module
+				<span *ngIf='currentCallStatus'>&mdash; (Loading...)</span>
+				<span *ngIf='username !== "UNDEF" && username !== "N"'>&mdash; Welcome {{username}}</span>
+			</mat-card-title>
 			<mat-card-subtitle>
 				Created two new modules for NgRx store part of the app. These two new modules will have an app-wide
 				store controlling them. The rest of the app will still be as is to keep all that is learnt as is.
