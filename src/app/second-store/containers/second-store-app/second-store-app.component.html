@@ -1,14 +1,54 @@
 <div fxLayout='row' fxLayoutAlign='center start'>
 	<mat-card fxFlex='90'>
 		<mat-card-header>
-			<mat-card-title> Second Store Module </mat-card-title>
+			<mat-card-title>
+				Second Store Module
+				<span *ngIf='shoppingFrequency > 0'>
+					({{shoppingFrequency}} times paid )
+				</span>
+			</mat-card-title>
 			<mat-card-subtitle>
 				Created two new modules for NgRx store part of the app. These two new modules will have an app-wide
 				store controlling them. The rest of the app will still be as is to keep all that is learnt as is.
 			</mat-card-subtitle>
 		</mat-card-header>
 		<mat-card-content>
-			add content here
+			<div fxLayout='row' fxLayoutAlign='space-evenly'>
+				<div fxLayout='column' fxFlex='45'>
+					<div *ngIf='status' class='second-store-red-alert'> Shopping list is outdated </div>
+					<div *ngIf='!status && ingredientList.length > 0' class='second-store-green-alert'>
+						Shopping list is up to date
+					</div>
+					<div *ngIf='!status && ingredientList.length === 0' class='second-store-blue-alert'>
+						Shopping list is empty
+					</div>
+					<div class='store-list' fxLayout='column'>
+						<div *ngFor='let ingredient of ingredientList; let i = index'>
+							<mat-card class='second-store-ingredient'>
+								<mat-card-content fxLayout='row' fxLayoutAlign='space-between'>
+									<div>{{ingredient.ingredientName}} ( X {{ingredient.ingredientQuantity}} )</div>
+									<div>${{ingredient.totalPrice}} USD</div>
+								</mat-card-content>
+							</mat-card>
+						</div>
+					</div>
+					<div class='second-store-blue-alert'> Total Price is ${{shoppingPrice}} USD </div>
+				</div>
+				<div fxFlex='45'>
+					<mat-card class='store-button-card' fxLayoutAlign='center center'>
+						<button mat-icon-button (click)='onBuyIngredients()'
+							[disabled]='!ingredientList || ingredientList.length === 0'>
+							<mat-icon style='transform: scale(5)'>add_shopping_cart</mat-icon>
+						</button>
+					</mat-card>
+				</div>
+			</div>
+			<div *ngIf='this.alertMessage' class='second-store-red-alert'>{{alertMessage}}</div>
 		</mat-card-content>
+		<mat-card-actions fxLayout='row' fxLayoutAlign='end'>
+			<button mat-raised-button color='primary' (click)='getAllRecipeIngredients()'> Add to Cart </button>
+			<button mat-raised-button color='primary' (click)='clearAllIngredients()'
+				[disabled]='!ingredientList || ingredientList.length === 0'> Clear Cart </button>
+		</mat-card-actions>
 	</mat-card>
 </div>

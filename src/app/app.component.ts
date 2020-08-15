@@ -11,6 +11,18 @@ export class AppComponent implements OnInit {
 
 	ngOnInit() {}
 
+	toIconReference() {
+		window.open('https://www.w3schools.com/icons/icons_reference.asp', '_blank');
+	}
+
+	toRxjsOperatorsAPI() {
+		window.open('https://rxjs.dev/guide/operators', '_blank');
+	}
+
+	toNgrxAPI() {
+		window.open('https://ngrx.io/', '_blank');
+	}
+
 	toFlexLayoutAPI() {
 		window.open('https://tburleson-layouts-demos.firebaseapp.com/#/docs', '_blank');
 	}

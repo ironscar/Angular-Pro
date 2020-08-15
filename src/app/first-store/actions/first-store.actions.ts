@@ -2,7 +2,6 @@ import { Action } from '@ngrx/store';
 import { StoreRecipe, StoreUser } from '../first-store.models';
 
 export enum FirstStoreActionTypes {
-	// standard actions
 	NewStoreRecipe = '[First Store] New Store Recipe',
 	EditStoreRecipe = '[First Store] Edit Store Recipe',
 	DuplicateStoreRecipe = '[First Store] Duplicate Store Recipe',

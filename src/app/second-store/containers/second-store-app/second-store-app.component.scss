@@ -1,0 +1,34 @@
+.second-store-red-alert {
+	padding: 1em;
+	margin: 1em 1em 1em 0em;
+	background-color: lightpink;
+	color: red;
+	font-weight: 600;
+}
+.second-store-green-alert {
+	padding: 1em;
+	margin: 1em 1em 1em 0em;
+	background-color: lightgreen;
+	color: green;
+	font-weight: 600;
+}
+.second-store-blue-alert {
+	padding: 1em;
+	margin: 1em 1em 1em 0em;
+	background-color: lightblue;
+	color: blue;
+	font-weight: 600;
+}
+.second-store-ingredient {
+	margin: 8px 0px;
+}
+.store-button-card {
+	height: 375px;
+	margin-top: 1em;
+}
+.store-list {
+	height: 250px;
+	width: 96%;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
