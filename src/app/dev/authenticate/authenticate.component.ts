@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { NgForm } from '@angular/forms';
 
 import { BackendApiService } from '../services/backend-api.service';
@@ -17,7 +18,7 @@ export class AuthenticateComponent implements OnInit, OnDestroy {
 
 	@ViewChild('authForm') authForm: NgForm;
 
-	constructor(private apiService: BackendApiService, private cdr: ChangeDetectorRef) {}
+	constructor(private apiService: BackendApiService, private cdr: ChangeDetectorRef, @Inject(PLATFORM_ID) private platformId) {}
 
 	ngOnInit() {
 		this.loginSubscription = this.apiService.loginSubject.subscribe(data => {
@@ -25,7 +26,11 @@ export class AuthenticateComponent implements OnInit, OnDestroy {
 			console.log(data);
 			this.cdr.detectChanges();
 		});
-		this.apiService.setLoginOnLoad();
+		if (isPlatformBrowser(this.platformId)) {
+			this.apiService.setLoginOnLoad();
+		} else {
+			console.log('on server with angular universal');
+		}
 	}
 
 	onSwitchMode() {
@@ -55,4 +60,8 @@ export class AuthenticateComponent implements OnInit, OnDestroy {
 /**
  * Log in disabled if already logged in
  * get from local storage with setLoginOnLoad after subscription so as to update status with subject
+ *
+ * Login on load disabled if app on server as it uses localStorage which would fail on server
+ * platformId is injected as shown and used in isPlatformBrowser() or isPlatformServer() to tell where it is run
+ * This is useful for angular Universal
  */

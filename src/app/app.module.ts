@@ -16,7 +16,7 @@ import { environment } from 'src/environments/environment';
 @NgModule({
 	declarations: [AppComponent],
 	imports: [
-		BrowserModule,
+		BrowserModule.withServerTransition({ appId: 'serverApp' }),
 		BrowserAnimationsModule,
 		HttpClientModule,
 		StoreModule.forRoot(reducers),
@@ -44,4 +44,5 @@ export class AppModule {}
  * StoreDevtools added only for dev env and works with the Redux extension
  * StoreRouterConnectingModule dispatches actions based on routing and you can react to those accordingly
  * It takes a forRoot with no arguments by default but can specify further options
+ * withServerTransition for BrowserModule is added due to angular universal - check out AppServerModule which is created for universal
  */

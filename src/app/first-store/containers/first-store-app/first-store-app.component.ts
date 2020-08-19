@@ -102,6 +102,7 @@ export class FirstStoreAppComponent implements OnInit, OnDestroy {
 		this.storeSubscriptions.map(sub => sub.unsubscribe());
 	}
 }
+
 /**
  * Actions are dispatched to all reducers as we use the app-wide store state in containers
  * For similar reasons, action types are prefixed to ensure uniqueness across app
