@@ -22,4 +22,6 @@ export class DevRoutingModule {}
 /*
  * for child is done for feature modules and for root is only done for root module
  * Dynamic params (:id) should always come after the normal ones with same value upto there
+ *
+ * The dynamic param part stopped working later on but query and hash still work
  */

@@ -1,0 +1,59 @@
+<h2> Angular Animations </h2>
+<button mat-raised-button color='primary' (click)='onMultipleStateControl()'> Multiple State Control </button>
+&nbsp;&nbsp;
+<button mat-raised-button color='primary' (click)='onAnimate()'> Animate </button>
+&nbsp;&nbsp;
+<button mat-raised-button color='primary' (click)='onShrink()'> Shrink </button>
+<br><br>
+<hr>
+<div style='width: 150px; height: 50px' [@divState]='animState' (@divState.start)='onAnimationEvent($event, "start")'
+	(@divState.done)='onAnimationEvent($event, "done")'>
+</div>
+<br>
+<div style='width: 150px; height: 50px' [@complexState]='complexAnimState'></div>
+<hr><br>
+<mat-form-field>
+	<mat-label> Enter item </mat-label>
+	<input matInput type='text' #itemInput>
+</mat-form-field>
+&nbsp;&nbsp;
+<button mat-raised-button color='primary' (click)='onAddItem()'> Add item </button>
+<br><br>
+<hr><br>
+<div fxLayout='row' fxLayoutAlign='space-between'>
+	<div fxFlex='48' style='border: 1px solid #e4e4e4; border-radius: 8px; overflow: hidden'>
+		<div [@firstList] *ngFor='let item of items; let i = index' [ngStyle]='{
+			"border-bottom": (i === items.length - 1 ? "" : "1px solid #e4e4e4"),
+			"padding": "1em"
+		}'>
+			<div fxLayout='row' fxLayoutAlign='space-between center'>
+				<span> {{item}} </span>
+				<button mat-icon-button (click)='onRemoveItem(i)'>
+					<mat-icon>delete</mat-icon>
+				</button>
+			</div>
+		</div>
+	</div>
+	<div fxFlex='48' style='border: 1px solid #e4e4e4; border-radius: 8px; overflow: hidden'>
+		<div [@secondList] *ngFor='let item of items; let i = index' [ngStyle]='{
+			"border-bottom": (i === items.length - 1 ? "" : "1px solid #e4e4e4"),
+			"padding": "1em"
+		}'>
+			<div fxLayout='row' fxLayoutAlign='space-between center'>
+				<span> {{item}} </span>
+				<button mat-icon-button (click)='onRemoveItem(i)'>
+					<mat-icon>delete</mat-icon>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 
+	* [@divState] is how the animation trigger called 'divState' is attached to an element 
+	* It is basically binded to the animState variable defined in the component
+	* If void is used for transitions, it doesn't require a state variable but instead you can 
+	  specify a start (any void) state in the transition function as parameter
+	* Overflow hides the outgoing or incoming item
+	* Animation events can be listened to with event binding but add an '@' to specify that
+-->
