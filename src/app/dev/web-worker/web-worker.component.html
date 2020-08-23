@@ -1,0 +1,36 @@
+<div fxLayout='row' fxLayoutAlign='space-between'>
+	<div fxLayout='column' fxFlex='50'>
+		<h2>Service Workers</h2>
+		<mat-card>
+			<p>
+				Here, let's set up some actions to send a push notification and cache some assets.
+				Also make it usable across the dev server and see how it works
+			</p>
+			<div>
+				<!-- setup service worker stuff like in techmania project -->
+			</div>
+		</mat-card>
+	</div>
+	<div fxLayout='column' fxFlex='45'>
+		<h2>Web Workers</h2>
+		<mat-card>
+			<p>
+				Here, let's set up some complex calculation like an NP-complete problem for a huge
+				scale. Then we will choose whether to use main thread or use "x" web workers to see
+				the difference in performance
+			</p>
+			<div fxLayout='row'>
+				<div fxLayout='column'>
+					<button mat-raised-button color='primary' (click)='onMainThreadExec()'> Main Thread </button>
+					<button mat-raised-button color='primary' (click)='onWebWorkerExec(1)'> Web Worker (1) </button>
+					<button mat-raised-button color='primary' (click)='onWebWorkerExec(2)'> Web Worker (2) </button>
+					<button mat-raised-button color='primary' (click)='onWebWorkerExec(3)'> Web Worker (3) </button>
+					<button mat-raised-button color='primary' (click)='onWebWorkerExec(4)'> Web Worker (4) </button>
+				</div>
+				<div fxLayout='column' class='stats-area'>
+					<!-- setup statistics to compare performance -->
+				</div>
+			</div>
+		</mat-card>
+	</div>
+</div>

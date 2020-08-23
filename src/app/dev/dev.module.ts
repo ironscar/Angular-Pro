@@ -23,6 +23,7 @@ import { DynamicComponent } from './dynamic/dynamic.component';
 import { DynamicAlertComponent } from './dynamic/dynamic-alert/dynamic-alert.component';
 import { PlaceholderDirective } from './directives/placeholder/placeholder.directive';
 import { AngularAnimsComponent } from './angular-anims/angular-anims.component';
+import { WebWorkerComponent } from './web-worker/web-worker.component';
 
 @NgModule({
 	declarations: [
@@ -42,7 +43,8 @@ import { AngularAnimsComponent } from './angular-anims/angular-anims.component';
 		DynamicComponent,
 		DynamicAlertComponent,
 		PlaceholderDirective,
-		AngularAnimsComponent
+		AngularAnimsComponent,
+		WebWorkerComponent
 	],
 	imports: [CommonModule, HttpClientModule, DevRoutingModule, SharedModule],
 	providers: [BackendApiService, { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }]

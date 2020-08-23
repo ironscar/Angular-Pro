@@ -8,6 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "build:prod": "ng build --prod",
     "front-end": "ng serve",
     "back-end": "java -jar demo/target/demo-0.0.1-SNAPSHOT.jar",
     "dev:ssr": "ng run angular-pro:serve-ssr",
