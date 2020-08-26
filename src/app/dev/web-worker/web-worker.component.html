@@ -26,9 +26,13 @@
 					<button mat-raised-button color='primary' (click)='onWebWorkerExec(2)'> Web Worker (2) </button>
 					<button mat-raised-button color='primary' (click)='onWebWorkerExec(3)'> Web Worker (3) </button>
 					<button mat-raised-button color='primary' (click)='onWebWorkerExec(4)'> Web Worker (4) </button>
+					<button mat-raised-button color='warn' (click)='onDestroyWorkers()'> Destroy workers </button>
 				</div>
 				<div fxLayout='column' class='stats-area'>
-					<!-- setup statistics to compare performance -->
+					<mat-spinner *ngIf='isComputing'></mat-spinner>
+					<div *ngIf='!isComputing'>
+						<!-- check what to show here as result/statistics -->
+					</div>
 				</div>
 			</div>
 		</mat-card>
