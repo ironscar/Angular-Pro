@@ -24,6 +24,7 @@ import { DynamicAlertComponent } from './dynamic/dynamic-alert/dynamic-alert.com
 import { PlaceholderDirective } from './directives/placeholder/placeholder.directive';
 import { AngularAnimsComponent } from './angular-anims/angular-anims.component';
 import { WebWorkerComponent } from './web-worker/web-worker.component';
+import { DataVizComponent } from './data-viz/data-viz.component';
 
 @NgModule({
 	declarations: [
@@ -44,7 +45,8 @@ import { WebWorkerComponent } from './web-worker/web-worker.component';
 		DynamicAlertComponent,
 		PlaceholderDirective,
 		AngularAnimsComponent,
-		WebWorkerComponent
+		WebWorkerComponent,
+		DataVizComponent
 	],
 	imports: [CommonModule, HttpClientModule, DevRoutingModule, SharedModule],
 	providers: [BackendApiService, { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }]

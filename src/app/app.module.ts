@@ -12,7 +12,7 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { AppComponent } from './app.component';
 import { reducers, effects } from './reducers';
 import { environment } from 'src/environments/environment';
-import { ServiceWorkerModule } from '@angular/service-worker';
+// import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
 	declarations: [AppComponent],
@@ -25,8 +25,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 		environment.development ? StoreDevtoolsModule.instrument() : [],
 		StoreRouterConnectingModule.forRoot(),
 		SharedModule,
-		AppRoutingModule,
-		ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+		AppRoutingModule
+		// ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
 	],
 	bootstrap: [AppComponent]
 })
