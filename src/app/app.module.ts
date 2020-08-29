@@ -12,7 +12,6 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { AppComponent } from './app.component';
 import { reducers, effects } from './reducers';
 import { environment } from 'src/environments/environment';
-// import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
 	declarations: [AppComponent],
@@ -26,7 +25,6 @@ import { environment } from 'src/environments/environment';
 		StoreRouterConnectingModule.forRoot(),
 		SharedModule,
 		AppRoutingModule
-		// ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
 	],
 	bootstrap: [AppComponent]
 })
@@ -47,5 +45,4 @@ export class AppModule {}
  * StoreRouterConnectingModule dispatches actions based on routing and you can react to those accordingly
  * It takes a forRoot with no arguments by default but can specify further options
  * withServerTransition for BrowserModule is added due to angular universal - check out AppServerModule which is created for universal
- * ServiceWorkerModule registers a service worker which is generated on build and enabled only for production
  */
