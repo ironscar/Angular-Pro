@@ -70,6 +70,17 @@ self.addEventListener('fetch', function (event) {
 				.then(function (actualResponse) {
 					if (actualResponse) {
 						console.log('returned actual response from network');
+						// cache all stuff again just in case updated
+						caches
+							.open(STATIC_CACHE_NAME)
+							.then(function (cache) {
+								console.log('Opened static cache', cache);
+								return cache.addAll(urlsToCache);
+							})
+							.catch(function (error) {
+								console.log('service worker caching error', error);
+							});
+						// return actual response
 						return actualResponse;
 					}
 				})
@@ -130,6 +141,8 @@ self.addEventListener('message', function (event) {
  * thing is cache won't update until you update service worker so change the version as there is nothing else to change
  * fetch is used to intercept all requests and responses with a few restrictions like cors
  * for resources with dev in url, we fetch index.html and otherwise we fetch offline.html
- * currently there is set to pattern 5 of network and cache
- * follow the blog and check if you can set up pattern 7 perfectly https://dbwriteups.wordpress.com/2015/11/16/service-workers-part-2-offline-caching-patterns/
+ * currently there is set to pattern of network call & update cache, else cache call, else offline html
+ * currently the cache update on successful network call is unoptimized as all items are refreshed on each fetch whereas it should only happen once for each reload
+ * ideally you would take a look at the request & store that but since routes aren't cached here, that won't make sense
+ * Its important to maintain the local storage space as browser can clear it out if its nearing full
  */
