@@ -6,9 +6,18 @@
 				Here, let's set up some actions to send a push notification and cache some assets.
 				Also make it usable across the dev server and see how it works
 			</p>
-			<div>
-				<button mat-raised-button color='primary' (click)='onSendMessageToServiceWorker()'>
+			<div fxLayout='column'>
+				<button class='long-button' mat-raised-button color='primary' (click)='onSendMessageToServiceWorker()'>
 					Send Message
+				</button>
+				<button class='long-button' mat-raised-button color='primary' (click)='makeApiCall()'>
+					API Call (Cached)
+				</button>
+				<button class='long-button' mat-raised-button color='primary' (click)='requestNotificationPermission()'>
+					Allow Notifications
+				</button>
+				<button class='long-button' mat-raised-button color='primary' (click)='showNotification()'>
+					Show Notification
 				</button>
 			</div>
 		</mat-card>

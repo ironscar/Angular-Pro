@@ -10,7 +10,8 @@ var urlsToCache = [
 	'./styles.js',
 	'vendor.js',
 	'main.js',
-	'dev-dev-module.js'
+	'dev-dev-module.js',
+	'./assets/images/gnomon-live-class.jpg'
 ];
 
 self.addEventListener('install', function (event) {
@@ -117,6 +118,24 @@ self.addEventListener('fetch', function (event) {
 	);
 });
 
+self.addEventListener('notificationclick', function (event) {
+	console.log(event);
+	event.notification.close();
+	if (!event.action) {
+		console.log('normal notification click');
+		return;
+	}
+	switch (event.action) {
+		case 'enroll-now': {
+			console.log('Enroll now action');
+			self.clients.openWindow('https://gnomon.edu').then(function () {});
+			break;
+		}
+		default:
+			console.log('Unknown action');
+	}
+});
+
 self.addEventListener('message', function (event) {
 	const data = event.data;
 	switch (data.type) {
@@ -145,4 +164,7 @@ self.addEventListener('message', function (event) {
  * currently the cache update on successful network call is unoptimized as all items are refreshed on each fetch whereas it should only happen once for each reload
  * ideally you would take a look at the request & store that but since routes aren't cached here, that won't make sense
  * Its important to maintain the local storage space as browser can clear it out if its nearing full
+ * notification click specifies the event when click on notification
+ * we close it manually as Android doesn't do so automatically
+ * to open a link, use clients  after which you can open window
  */

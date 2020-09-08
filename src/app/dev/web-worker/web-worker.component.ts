@@ -59,6 +59,43 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 		}
 	}
 
+	makeApiCall() {
+		// make normal call but cache in dynamic cache via service worker when network on, else get from cache
+	}
+
+	requestNotificationPermission() {
+		if (Notification.requestPermission) {
+			Notification.requestPermission().then((permission: string) => {
+				console.log('push notification permission ', permission);
+			});
+		} else {
+			console.log('push notifications are not supported on this browser');
+		}
+	}
+
+	showNotification() {
+		if (navigator.serviceWorker.controller) {
+			navigator.serviceWorker.ready.then((registration: ServiceWorkerRegistration) => {
+				const title = 'Gnomon Live Class';
+				const options: NotificationOptions = {
+					tag: 'enroll_now',
+					image: './assets/images/gnomon-live-class.jpg',
+					body: 'Learn from working professionals in \nspecific areas of expertise',
+					actions: [
+						{
+							action: 'enroll-now',
+							title: 'Enroll now'
+						}
+					],
+					requireInteraction: true
+				};
+				registration.showNotification(title, options);
+			});
+		} else {
+			console.log('no active service worker');
+		}
+	}
+
 	onGenerateProblem() {
 		this.computeService.initRandomInstanceOfProblem();
 	}
@@ -135,6 +172,8 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
  * Add file to src and add path to assets folder of angular.json for both serve and build
  * Make sure to use platformId as it only runs on browser, if using universal
  * Since service workers are an interface of web workers, you may be able to create it as is but this is easier to follow along
+ * This shows how to send notifications, push notifications are when the server directly sends it to worker without getting a request
+ * Push notifications would require keys and message-push server etc which need not be done now
  * Creates threads to solve a problem, later make a service project out of the problem
  * Web workers only work on browser and not on server so fallbacks are required
  * Web workers show up in the Sources tab under threads in browser tools
