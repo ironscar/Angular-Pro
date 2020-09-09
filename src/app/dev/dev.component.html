@@ -54,10 +54,14 @@
 					</div>
 				</mat-tab>
 				<mat-tab label="Services & Observables">
-					<app-account-list></app-account-list>
+					<ng-template matTabContent>
+						<app-account-list></app-account-list>
+					</ng-template>
 				</mat-tab>
 				<mat-tab label="Template & Reactive Forms">
-					<app-form></app-form>
+					<ng-template matTabContent>
+						<app-form></app-form>
+					</ng-template>
 				</mat-tab>
 				<mat-tab label="Authentication">
 					<app-authenticate></app-authenticate>
@@ -66,13 +70,19 @@
 					<app-http-pipe></app-http-pipe>
 				</mat-tab>
 				<mat-tab label="Dynamic Components">
-					<app-dynamic></app-dynamic>
+					<ng-template matTabContent>
+						<app-dynamic></app-dynamic>
+					</ng-template>
 				</mat-tab>
 				<mat-tab label="Angular Animations">
-					<app-angular-anims></app-angular-anims>
+					<ng-template matTabContent>
+						<app-angular-anims></app-angular-anims>
+					</ng-template>
 				</mat-tab>
 				<mat-tab label="Data Visualizations">
-					<app-data-viz></app-data-viz>
+					<ng-template matTabContent>
+						<app-data-viz></app-data-viz>
+					</ng-template>
 				</mat-tab>
 				<mat-tab label="Web & Service Workers">
 					<app-web-worker></app-web-worker>
@@ -81,3 +91,9 @@
 		</mat-card-content>
 	</mat-card>
 </div>
+
+<!-- 
+	* ng-template matTabContent will lazy load content of the tab, default is eager
+	* made the first tab, api stuff and service-web-workers tab as eager
+	* made data-viz as lazy so that the charts actually get destroyed and created properly
+ -->

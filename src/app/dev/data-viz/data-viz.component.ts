@@ -23,8 +23,11 @@ export class DataVizComponent implements OnInit, AfterViewInit, OnDestroy {
 		if (isPlatformServer(this.platFormId)) {
 			console.log('amcharts do not work here');
 		} else {
-			this.createXYChart('chartDiv');
-			this.createComplexCharts('chartDiv2');
+			setTimeout(() => {
+				// add timeout so that tab changes first and then charts load
+				this.createXYChart('chartDiv');
+				this.createComplexCharts('chartDiv2');
+			}, 500);
 		}
 	}
 
@@ -394,4 +397,5 @@ export class DataVizComponent implements OnInit, AfterViewInit, OnDestroy {
 /**
  * Charts work only on browser so need to include platform id to prevent errors with universal
  * Both chart examples were pretty much copied rather than self-made
+ * It stutters when changing the tab as the containers get destroyed and it takes time
  */
