@@ -3,22 +3,36 @@
 		<h2>Service Workers</h2>
 		<mat-card>
 			<p>
-				Here, let's set up some actions to send a push notification and cache some assets.
-				Also make it usable across the dev server and see how it works
+				The service worker here is used to send/recieve messages from the page.
+				It can cache static and dynamic data where static data is stuff like images
+				and html files whereas dynamic data are response from APIs etc. It can also
+				send push notifications to the user. To see dynamic caching, turn off back-end
+				and make API call to return data from cache. To show notifications, first check
+				to allow notifications.
 			</p>
-			<div fxLayout='column'>
-				<button class='long-button' mat-raised-button color='primary' (click)='onSendMessageToServiceWorker()'>
-					Send Message
-				</button>
-				<button class='long-button' mat-raised-button color='primary' (click)='makeApiCall()'>
-					API Call (Cached)
-				</button>
-				<button class='long-button' mat-raised-button color='primary' (click)='requestNotificationPermission()'>
-					Allow Notifications
-				</button>
-				<button class='long-button' mat-raised-button color='primary' (click)='showNotification()'>
-					Show Notification
-				</button>
+			<div fxLayout='row'>
+				<div fxLayout='column'>
+					<button class='long-button' mat-raised-button color='primary'
+						(click)='onSendMessageToServiceWorker()'>
+						Send Message
+					</button>
+					<button class='long-button' mat-raised-button color='primary' (click)='makeApiCall()'>
+						API Call (Cached)
+					</button>
+					<button class='long-button' mat-raised-button color='primary'
+						(click)='requestNotificationPermission()'>
+						Allow Notifications
+					</button>
+					<button class='long-button' mat-raised-button color='primary' (click)='showNotification()'>
+						Show Notification
+					</button>
+				</div>
+				<div fxLayout='column' style='margin-left: 32px'>
+					<mat-spinner *ngIf='dynamicCacheProgress'></mat-spinner>
+					<p class='para-bar' *ngFor='let user of users'>
+						<b>{{user.firstName}} {{user.lastName}}</b>
+					</p>
+				</div>
 			</div>
 		</mat-card>
 	</div>
@@ -26,14 +40,19 @@
 		<h2>Web Workers</h2>
 		<mat-card>
 			<p>
-				Here, let's set up some complex calculation like an NP-complete problem for a huge
-				scale. Then we will choose whether to use main thread or use "x" web workers to see
-				the difference in performance
+				The vehicle routing problem will be solved here for a random instance in a brute force way.
+				First, it shall be done on main thread and we shall see how performant it is.
+				Second, it will be done on n web workers as a parallel algorithm and see how the performance changes.
+				Finally, it will be done over a socket using the single-thread implementation but in a service.
+				Each method must update data to user in real time before returning final results and allow the
+				user to abort process and return intermediate results. The data for this will show up on the right
+				so that the user can compare the different approaches.
 			</p>
 			<div fxLayout='row'>
 				<div fxLayout='column'>
 					<button mat-raised-button color='primary' (click)='onGenerateProblem()'> Create Problem </button>
 					<button mat-raised-button color='primary' (click)='onMainThreadExec()'> Main Thread </button>
+					<button mat-raised-button color='primary' (click)='onSocketExec()'> Socket </button>
 					<button mat-raised-button color='primary' (click)='onWebWorkerExec(1)'> Web Worker (1) </button>
 					<button mat-raised-button color='primary' (click)='onWebWorkerExec(2)'> Web Worker (2) </button>
 					<button mat-raised-button color='primary' (click)='onWebWorkerExec(3)'> Web Worker (3) </button>

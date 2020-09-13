@@ -71,16 +71,29 @@ self.addEventListener('fetch', function (event) {
 				.then(function (actualResponse) {
 					if (actualResponse) {
 						console.log('returned actual response from network');
-						// cache all stuff again just in case updated
-						caches
-							.open(STATIC_CACHE_NAME)
-							.then(function (cache) {
-								console.log('Opened static cache', cache);
-								return cache.addAll(urlsToCache);
-							})
-							.catch(function (error) {
-								console.log('service worker caching error', error);
-							});
+						if (event.request.url.indexOf('localhost:8080/') != -1) {
+							// store in dynamic cache if an api call
+							caches
+								.open(DYNAMIC_CACHE_NAME)
+								.then(function (cache) {
+									console.log('Opened DYNAMIC cache', cache);
+									return cache.add(event.request.url, actualResponse);
+								})
+								.catch(function (error) {
+									console.log('service worker caching error', error);
+								});
+						} else {
+							// cache all stuff again in static cache just in case updated
+							caches
+								.open(STATIC_CACHE_NAME)
+								.then(function (cache) {
+									console.log('Opened static cache', cache);
+									return cache.addAll(urlsToCache);
+								})
+								.catch(function (error) {
+									console.log('service worker caching error', error);
+								});
+						}
 						// return actual response
 						return actualResponse;
 					}
@@ -140,7 +153,7 @@ self.addEventListener('message', function (event) {
 	const data = event.data;
 	switch (data.type) {
 		case 'TWO_WAY_COMMUNICATION': {
-			console.log('responding to message from page: ', data.payload);
+			console.log('responding to [TWO_WAY_COMMUNICATION] from sw: ', data.payload);
 			event.ports[0].postMessage({
 				type: 'TWO_WAY_COMMUNICATION',
 				payload: 'Hi, dev module!'
@@ -167,4 +180,5 @@ self.addEventListener('message', function (event) {
  * notification click specifies the event when click on notification
  * we close it manually as Android doesn't do so automatically
  * to open a link, use clients  after which you can open window
+ * dynamic cache used here to store api results for get all and thus nothing changes in actual code even when offline
  */

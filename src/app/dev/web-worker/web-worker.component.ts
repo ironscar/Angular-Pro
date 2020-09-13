@@ -1,9 +1,12 @@
-import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, Inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 import { ComputeProblemService } from './compute-problem.service';
 import * as WebWorkerConstants from './web-worker.constants';
 import { WorkerData } from './web-worker.model';
+import { BackendApiService } from '../services/backend-api.service';
+import { Subscription } from 'rxjs';
+import { UserRecord } from '../http-pipe/user.interface';
 
 @Component({
 	selector: 'app-web-worker',
@@ -13,17 +16,46 @@ import { WorkerData } from './web-worker.model';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WebWorkerComponent implements OnInit, OnDestroy {
+	users: UserRecord[] = [];
+	responseSubscription: Subscription;
+	errorSubscription: Subscription;
+	dynamicCacheProgress = false;
+
 	isComputing = false;
 	workers: Worker[] = [];
 
-	constructor(private computeService: ComputeProblemService, @Inject(PLATFORM_ID) private platformId) {}
+	constructor(
+		private computeService: ComputeProblemService,
+		private apiService: BackendApiService,
+		@Inject(PLATFORM_ID) private platformId,
+		private cdr: ChangeDetectorRef
+	) {}
 
 	ngOnInit() {
 		if (isPlatformBrowser(this.platformId)) {
 			this.onRegisterServiceWorker();
+			this.onSetUpApiService();
 		} else {
 			console.log('service workers not on server');
 		}
+	}
+
+	onSetUpApiService() {
+		// this is set to true at start as the back end call is made somewhere else and this listens to it at start
+		this.dynamicCacheProgress = true;
+		this.responseSubscription = this.apiService.responseSubject.subscribe((response: { type: string; users: UserRecord[] }) => {
+			if (response.type === 'all') {
+				console.log('get all users', response.users);
+				this.users = response.users;
+				this.dynamicCacheProgress = false;
+				this.cdr.detectChanges();
+			}
+		});
+		this.errorSubscription = this.apiService.errorSubject.subscribe(data => {
+			console.log('api http error ', data);
+			this.dynamicCacheProgress = false;
+			this.cdr.detectChanges();
+		});
 	}
 
 	onRegisterServiceWorker() {
@@ -60,7 +92,9 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 	}
 
 	makeApiCall() {
-		// make normal call but cache in dynamic cache via service worker when network on, else get from cache
+		this.users = [];
+		this.dynamicCacheProgress = true;
+		this.apiService.getAllUsers();
 	}
 
 	requestNotificationPermission() {
@@ -103,6 +137,11 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 	onMainThreadExec() {
 		console.log('main thread used');
 		this.computeService.computeProblem();
+	}
+
+	onSocketExec() {
+		// see how to use effects either here or take to new module and do it there
+		console.log('socket used with ngrx effects');
 	}
 
 	onWebWorkerExec(workerCount: number) {
@@ -174,6 +213,8 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
  * Since service workers are an interface of web workers, you may be able to create it as is but this is easier to follow along
  * This shows how to send notifications, push notifications are when the server directly sends it to worker without getting a request
  * Push notifications would require keys and message-push server etc which need not be done now
+ * Used same api service as created for http module to show dynamic caching in service workers
+ * Using caches in service worker changes no implementation in here which is a benefit
  * Creates threads to solve a problem, later make a service project out of the problem
  * Web workers only work on browser and not on server so fallbacks are required
  * Web workers show up in the Sources tab under threads in browser tools
