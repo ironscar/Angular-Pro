@@ -1,8 +1,16 @@
-h1 {
-	margin: 16px;
-	cursor: pointer;
-}
 .active-link {
 	color: white;
 	background-color: rgb(100, 48, 196);
+}
+
+.app-content {
+	max-height: 640px;
+	overflow-y: auto;
+	margin-top: 8px;
+	padding: 8px 0px;
+	border: 1px solid black;
+}
+
+.parent-container {
+	height: 650px;
 }

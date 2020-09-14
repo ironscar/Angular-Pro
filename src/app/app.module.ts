@@ -8,6 +8,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { SocketStoreModule } from './socket-store/socket-store.module';
 
 import { AppComponent } from './app.component';
 import { reducers, effects } from './reducers';
@@ -24,7 +25,8 @@ import { environment } from 'src/environments/environment';
 		environment.development ? StoreDevtoolsModule.instrument() : [],
 		StoreRouterConnectingModule.forRoot(),
 		SharedModule,
-		AppRoutingModule
+		AppRoutingModule,
+		SocketStoreModule
 	],
 	bootstrap: [AppComponent]
 })

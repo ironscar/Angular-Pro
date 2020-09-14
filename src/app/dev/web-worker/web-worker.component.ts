@@ -131,17 +131,12 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 	}
 
 	onGenerateProblem() {
-		this.computeService.initRandomInstanceOfProblem();
+		this.computeService.initProblemInstance();
 	}
 
 	onMainThreadExec() {
 		console.log('main thread used');
 		this.computeService.computeProblem();
-	}
-
-	onSocketExec() {
-		// see how to use effects either here or take to new module and do it there
-		console.log('socket used with ngrx effects');
 	}
 
 	onWebWorkerExec(workerCount: number) {

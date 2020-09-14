@@ -25,6 +25,7 @@ import { PlaceholderDirective } from './directives/placeholder/placeholder.direc
 import { AngularAnimsComponent } from './angular-anims/angular-anims.component';
 import { WebWorkerComponent } from './web-worker/web-worker.component';
 import { DataVizComponent } from './data-viz/data-viz.component';
+import { TestComponent } from './test/test.component';
 
 @NgModule({
 	declarations: [
@@ -46,7 +47,8 @@ import { DataVizComponent } from './data-viz/data-viz.component';
 		PlaceholderDirective,
 		AngularAnimsComponent,
 		WebWorkerComponent,
-		DataVizComponent
+		DataVizComponent,
+		TestComponent
 	],
 	imports: [CommonModule, HttpClientModule, DevRoutingModule, SharedModule],
 	providers: [BackendApiService, { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }]

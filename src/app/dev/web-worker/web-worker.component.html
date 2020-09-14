@@ -43,7 +43,6 @@
 				The vehicle routing problem will be solved here for a random instance in a brute force way.
 				First, it shall be done on main thread and we shall see how performant it is.
 				Second, it will be done on n web workers as a parallel algorithm and see how the performance changes.
-				Finally, it will be done over a socket using the single-thread implementation but in a service.
 				Each method must update data to user in real time before returning final results and allow the
 				user to abort process and return intermediate results. The data for this will show up on the right
 				so that the user can compare the different approaches.
@@ -52,7 +51,6 @@
 				<div fxLayout='column'>
 					<button mat-raised-button color='primary' (click)='onGenerateProblem()'> Create Problem </button>
 					<button mat-raised-button color='primary' (click)='onMainThreadExec()'> Main Thread </button>
-					<button mat-raised-button color='primary' (click)='onSocketExec()'> Socket </button>
 					<button mat-raised-button color='primary' (click)='onWebWorkerExec(1)'> Web Worker (1) </button>
 					<button mat-raised-button color='primary' (click)='onWebWorkerExec(2)'> Web Worker (2) </button>
 					<button mat-raised-button color='primary' (click)='onWebWorkerExec(3)'> Web Worker (3) </button>
