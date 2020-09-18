@@ -26,6 +26,7 @@ import { AngularAnimsComponent } from './angular-anims/angular-anims.component';
 import { WebWorkerComponent } from './web-worker/web-worker.component';
 import { DataVizComponent } from './data-viz/data-viz.component';
 import { TestComponent } from './test/test.component';
+import { UserComponent } from './test/user/user.component';
 
 @NgModule({
 	declarations: [
@@ -48,7 +49,8 @@ import { TestComponent } from './test/test.component';
 		AngularAnimsComponent,
 		WebWorkerComponent,
 		DataVizComponent,
-		TestComponent
+		TestComponent,
+		UserComponent
 	],
 	imports: [CommonModule, HttpClientModule, DevRoutingModule, SharedModule],
 	providers: [BackendApiService, { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }]

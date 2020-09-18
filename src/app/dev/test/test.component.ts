@@ -7,6 +7,8 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TestComponent implements OnInit {
+	title = 'Angular Unit Testing';
+
 	constructor() {}
 
 	ngOnInit() {}
