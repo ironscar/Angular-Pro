@@ -27,6 +27,7 @@ import { WebWorkerComponent } from './web-worker/web-worker.component';
 import { DataVizComponent } from './data-viz/data-viz.component';
 import { TestComponent } from './test/test.component';
 import { UserComponent } from './test/user/user.component';
+import { ElementsComponent } from './elements/elements.component';
 
 @NgModule({
 	declarations: [
@@ -50,7 +51,8 @@ import { UserComponent } from './test/user/user.component';
 		WebWorkerComponent,
 		DataVizComponent,
 		TestComponent,
-		UserComponent
+		UserComponent,
+		ElementsComponent
 	],
 	imports: [CommonModule, HttpClientModule, DevRoutingModule, SharedModule],
 	providers: [BackendApiService, { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }]

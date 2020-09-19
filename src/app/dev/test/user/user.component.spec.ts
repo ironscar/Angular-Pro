@@ -3,6 +3,15 @@ import { async, TestBed } from '@angular/core/testing';
 import { UserComponent } from './user.component';
 import { UserService } from './user.service';
 
+// isolated (without Angular)
+describe('UserComponent reverse string test', () => {
+	it('should reverse the string', () => {
+		const us = new UserService();
+		expect(us.reverseString('Data')).toEqual('ataD');
+	});
+});
+
+// Non-isolated (with Angular)
 describe('UserComponent', () => {
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
@@ -41,6 +50,17 @@ describe('UserComponent', () => {
 		fixture.detectChanges();
 		expect((compiled.querySelector('p') as HTMLElement).textContent).toContain(' Please log in ');
 	});
+
+	it('data prop should resolve to "Data" asynchronously', async(() => {
+		const fixture = TestBed.createComponent(UserComponent);
+		const component = fixture.debugElement.componentInstance;
+		const service = fixture.debugElement.injector.get(UserService);
+		spyOn(service, 'getDetails').and.returnValue(Promise.resolve('Data'));
+		fixture.detectChanges();
+		fixture.whenStable().then(() => {
+			expect(component.data).toBe('Data');
+		});
+	}));
 });
 
 /**
@@ -48,4 +68,11 @@ describe('UserComponent', () => {
  * the property change requires a new component to be created so generally try to create this each time
  * don't define fixture, component etc outside to avoid that problem
  * console logs can be defined here in case required
+ * Generally, async tasks are service code and you wouldn't make those calls in test
+ * As a result, you will mock them using spyOn which can spy on a certain method and return mock values
+ * It returns this value when the method is called
+ * Async creates an async test env by faking the async tasks
+ * whenStable specifies what to do when async task ends as a callback
+ * Isolated tests are those which are completely independent and need no Angular test modules
+ * These can be done for features like direct data transformations etc and nothing Angular related
  */

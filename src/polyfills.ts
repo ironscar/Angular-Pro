@@ -19,7 +19,11 @@
  */
 
 /** IE10 and IE11 requires the following for NgClass support on SVG elements */
-// import 'classlist.js';  // Run `npm install --save classlist.js`.
+import 'classlist.js';  // Run `npm install --save classlist.js`.
+
+// polyfills for angular elements
+import '@webcomponents/custom-elements/custom-elements.min';
+import '@webcomponents/custom-elements/src/native-shim';
 
 /**
  * Web Animations `@angular/platform-browser/animations`

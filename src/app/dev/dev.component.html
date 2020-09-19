@@ -89,6 +89,13 @@
 				<mat-tab label="Web & Service Workers">
 					<app-web-worker></app-web-worker>
 				</mat-tab>
+				<mat-tab label="Angular Elements">
+					<ng-template matTabContent>
+						<div [innerHTML]='dynamicNormalContent'></div>
+						<div [innerHTML]='dynamicComponentContent'></div>
+						<div [innerHTML]='dynamicElementContent'></div>
+					</ng-template>
+				</mat-tab>
 			</mat-tab-group>
 		</mat-card-content>
 	</mat-card>
@@ -98,4 +105,5 @@
 	* ng-template matTabContent will lazy load content of the tab, default is eager
 	* made the first tab, api stuff and service-web-workers tab as eager
 	* made data-viz as lazy so that the charts actually get destroyed and created properly
+	* dynamic normal content and element content works but component content doesn't
  -->
