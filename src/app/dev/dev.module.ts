@@ -55,6 +55,7 @@ import { ElementsComponent } from './elements/elements.component';
 		ElementsComponent
 	],
 	imports: [CommonModule, HttpClientModule, DevRoutingModule, SharedModule],
+	exports: [ElementsComponent],
 	providers: [BackendApiService, { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }]
 })
 export class DevModule {}

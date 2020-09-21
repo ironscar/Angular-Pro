@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { Injector, NgModule } from '@angular/core';
+import { createCustomElement } from '@angular/elements';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
@@ -13,6 +14,7 @@ import { SocketStoreModule } from './socket-store/socket-store.module';
 import { AppComponent } from './app.component';
 import { reducers, effects } from './reducers';
 import { environment } from 'src/environments/environment';
+import { ElementsComponent } from './dev/elements/elements.component';
 
 @NgModule({
 	declarations: [AppComponent],
@@ -28,9 +30,17 @@ import { environment } from 'src/environments/environment';
 		AppRoutingModule,
 		SocketStoreModule
 	],
+	entryComponents: [ElementsComponent],
 	bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+	constructor(private injector: Injector) {
+		const angularElement2 = createCustomElement(ElementsComponent, { injector: this.injector });
+		customElements.define('angular-element2', angularElement2);
+	}
+
+	ngDoBootstrap() {}
+}
 
 /**
  * Feature Modules store a specific feature as an independent module
@@ -47,4 +57,8 @@ export class AppModule {}
  * StoreRouterConnectingModule dispatches actions based on routing and you can react to those accordingly
  * It takes a forRoot with no arguments by default but can specify further options
  * withServerTransition for BrowserModule is added due to angular universal - check out AppServerModule which is created for universal
+ * angular elements can be used in index.html by creating it as above and doing ngDoBootstrap()
+ * Then it can be used as dynamic content even in other components or in index.html
+ * create custom elements requires the injector to be imported and used
+ * customElements define is a JS functionality to define custom element with its tag
  */
