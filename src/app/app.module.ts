@@ -15,6 +15,7 @@ import { AppComponent } from './app.component';
 import { reducers, effects } from './reducers';
 import { environment } from 'src/environments/environment';
 import { ElementsComponent } from './dev/elements/elements.component';
+import { LibraryServiceModule } from 'projects/library-service/src/public-api';
 
 @NgModule({
 	declarations: [AppComponent],
@@ -28,7 +29,8 @@ import { ElementsComponent } from './dev/elements/elements.component';
 		StoreRouterConnectingModule.forRoot(),
 		SharedModule,
 		AppRoutingModule,
-		SocketStoreModule
+		SocketStoreModule,
+		LibraryServiceModule
 	],
 	entryComponents: [ElementsComponent],
 	bootstrap: [AppComponent]
@@ -61,4 +63,5 @@ export class AppModule {
  * Then it can be used as dynamic content even in other components or in index.html
  * create custom elements requires the injector to be imported and used
  * customElements define is a JS functionality to define custom element with its tag
+ * libraryServiceModule exports a default component from a default library created from angular cli just for showing it
  */
