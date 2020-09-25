@@ -62,5 +62,7 @@ The angular docs covers details about these commands on the website as well
 ## Angular JSON
 
 - This is the most important config file
+- This is used by the cli to run different commands etc and specify default flags
+- It includes the settings for each project and each project specifies options for generating build files for different environments, serve files during serve, test files during test etc
 
 ---
