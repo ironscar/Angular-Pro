@@ -1,4 +1,6 @@
 <div>
+	<h2 class='app-title'> Angular Pro App Running </h2>
+	&nbsp;
 	<button mat-raised-button color='primary' (click)='toIconReference()'> Icons Reference </button>
 	&nbsp;
 	<button mat-raised-button color='primary' (click)='toRxjsOperatorsAPI()'> RXJS Operators API </button>
@@ -15,10 +17,11 @@
 <hr>
 <a mat-raised-button routerLink='/home' routerLinkActive='active-link' [routerLinkActiveOptions]='{exact: true}'>Angular
 	Pro (Home Router)</a>
-<a mat-raised-button routerLink='/dev' routerLinkActive='active-link'>Angular Pro (Dev)</a>
-<a mat-raised-button routerLink='/main' routerLinkActive='active-link'>Angular Pro (Main)</a>
-<a mat-raised-button routerLink='/first-store' routerLinkActive='active-link'>NgRx Store (First)</a>
-<a mat-raised-button routerLink='/second-store' routerLinkActive='active-link'>NgRx Store (Second)</a>
+<a class='module-link' mat-raised-button routerLink='/dev' routerLinkActive='active-link'>Angular Pro (Dev)</a>
+<a class='module-link' mat-raised-button routerLink='/main' routerLinkActive='active-link'>Angular Pro (Main)</a>
+<a class='module-link' mat-raised-button routerLink='/first-store' routerLinkActive='active-link'>NgRx Store (First)</a>
+<a class='module-link' mat-raised-button routerLink='/second-store' routerLinkActive='active-link'>NgRx Store
+	(Second)</a>
 <hr>
 <div fxLayout='row' fxLayoutAlign='center start' class='parent-container'>
 	<div fxFlex='95' class='app-content'>
