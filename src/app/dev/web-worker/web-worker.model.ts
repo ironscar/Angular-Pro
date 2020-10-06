@@ -3,7 +3,12 @@ export interface WorkerData {
 	payload: any;
 }
 
+export interface PathNode {
+	pathNodes: number[];
+	pathDistance: number;
+}
+
 /**
- * Communication between worker and target uses this model
+ * Communication between worker and target uses the WorkerData model
  * Each message has a type and payload
  */

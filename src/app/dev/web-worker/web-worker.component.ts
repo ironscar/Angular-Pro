@@ -136,7 +136,10 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 
 	onMainThreadExec() {
 		console.log('main thread used');
-		this.computeService.computeProblem();
+		const t1 = new Date().getTime();
+		const finalDistance = this.computeService.computeTestProblem();
+		const t2 = new Date().getTime();
+		console.log('time taken = ', t2 - t1, 'ms');
 	}
 
 	onWebWorkerExec(workerCount: number) {
