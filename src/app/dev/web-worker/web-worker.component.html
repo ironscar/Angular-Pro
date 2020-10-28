@@ -1,4 +1,5 @@
 <div fxLayout='row' fxLayoutAlign='space-between'>
+	<!-- service-workers -->
 	<div fxLayout='column' fxFlex='50' style='padding: 8px'>
 		<h2>Service Workers</h2>
 		<mat-card>
@@ -36,6 +37,7 @@
 			</div>
 		</mat-card>
 	</div>
+	<!-- web workers -->
 	<div fxLayout='column' fxFlex='50' style='padding: 8px'>
 		<h2>Web Workers</h2>
 		<mat-card>
@@ -48,27 +50,54 @@
 				so that the user can compare the different approaches.
 			</p>
 			<div fxLayout='row'>
+				<!-- actions area -->
 				<div fxLayout='column'>
 					<button mat-raised-button color='primary' (click)='onGenerateProblem()'> Create Problem </button>
-					<button mat-raised-button color='primary' (click)='onMainThreadExec()'> Main Thread </button>
-					<button mat-raised-button color='primary' (click)='onWebWorkerExec(1)'> Web Worker (1) </button>
-					<button mat-raised-button color='primary' (click)='onWebWorkerExec(2)'> Web Worker (2) </button>
-					<button mat-raised-button color='primary' (click)='onWebWorkerExec(3)'> Web Worker (3) </button>
-					<button mat-raised-button color='primary' (click)='onWebWorkerExec(4)'> Web Worker (4) </button>
-					<button mat-raised-button color='warn' (click)='onDestroyWorkers()'> Destroy workers </button>
+					<button mat-raised-button color='primary' (click)='onMainThreadExec()' [disabled]='!problemCreated'>
+						Main Thread </button>
+					<button mat-raised-button color='primary' (click)='onWebWorkerExec(1)' [disabled]='!problemCreated'>
+						Web Worker (1) </button>
+					<button mat-raised-button color='primary' (click)='onWebWorkerExec(2)' [disabled]='!problemCreated'>
+						Web Worker (2) </button>
+					<button mat-raised-button color='primary' (click)='onWebWorkerExec(3)' [disabled]='!problemCreated'>
+						Web Worker (3) </button>
+					<button mat-raised-button color='primary' (click)='onWebWorkerExec(4)' [disabled]='!problemCreated'>
+						Web Worker (4) </button>
+					<button mat-raised-button color='warn' (click)='onDestroyWorkers()'
+						[disabled]='workers.length === 0'> Destroy workers </button>
 				</div>
+				<!-- realtime stats area -->
 				<div fxLayout='column' class='stats-area'>
-					<mat-spinner *ngIf='isComputing'></mat-spinner>
-					<div>
-						<!-- check what to show here as result/statistics -->
-						<span> Solutions Checked: {{solutionsChecked}} </span><br>
-						<span> Best Current Distance: {{bestDistance}} </span><br>
-						<span *ngIf='!isComputing && bestSolution'> Best Path: {{bestSolution}} </span><br>
-						<span *ngIf='!isComputing && totalTime'> Total Time Taken: {{totalTime}} </span><br>
-						<button *ngIf='isComputing && !abortCompute' mat-raised-button (click)='onMainThreadAbort()'>
-							Abort
-						</button>
-					</div>
+					<mat-card>
+						<h3 class='teal-label'> Real-time Stats </h3>
+						<mat-card-content fxLayout='row'>
+							<div fxLayout='column' class='number-area'>
+								<div *ngIf='solutionsChecked !== null'>
+									<span class='teal-label'> Solutions Checked: </span>
+									{{solutionsChecked}}
+								</div>
+								<div *ngIf='bestDistance'>
+									<span class='teal-label'> Best Current Distance: </span>
+									{{bestDistance}}
+								</div>
+								<div *ngIf='!isComputing && bestSolution'>
+									<span class='teal-label'> Best Path: </span>
+									{{bestSolution}}
+								</div>
+								<div *ngIf='!isComputing && totalTime'>
+									<span class='teal-label'> Total Time Taken: </span>
+									{{totalTime}}
+								</div>
+								<button style='margin-top: 48px' *ngIf='isComputing && !abortCompute' mat-raised-button
+									(click)='onMainThreadAbort()'>
+									Abort
+								</button>
+							</div>
+							<div *ngIf='isComputing' fxLayout='column' class='progress-area'>
+								<mat-spinner></mat-spinner>
+							</div>
+						</mat-card-content>
+					</mat-card>
 				</div>
 			</div>
 		</mat-card>

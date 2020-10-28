@@ -23,7 +23,8 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 
 	isComputing = false;
 	abortCompute = false;
-	solutionsChecked: number;
+	problemCreated = false;
+	solutionsChecked: number = null;
 	bestSolution: string;
 	bestDistance: number;
 	totalTime: number;
@@ -136,6 +137,11 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 	}
 
 	onGenerateProblem() {
+		this.bestSolution = null;
+		this.totalTime = null;
+		this.solutionsChecked = 0;
+		this.bestDistance = null;
+		this.problemCreated = true;
 		this.computeService.initProblemInstance();
 	}
 

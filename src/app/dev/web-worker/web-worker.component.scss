@@ -5,6 +5,11 @@ button {
 .stats-area {
 	width: 100%;
 	padding: 8px;
+	margin-left: 32px;
+}
+.progress-area {
+	width: 100px;
+	padding-left: 32px;
 }
 .long-button {
 	margin: 8px 0px;
@@ -15,4 +20,8 @@ button {
 	padding: 8px 16px;
 	color: white;
 	background-color: teal;
+}
+.teal-label {
+	color: teal;
+	font-weight: 600;
 }
