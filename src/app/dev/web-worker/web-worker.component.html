@@ -59,8 +59,15 @@
 				</div>
 				<div fxLayout='column' class='stats-area'>
 					<mat-spinner *ngIf='isComputing'></mat-spinner>
-					<div *ngIf='!isComputing'>
+					<div>
 						<!-- check what to show here as result/statistics -->
+						<span> Solutions Checked: {{solutionsChecked}} </span><br>
+						<span> Best Current Distance: {{bestDistance}} </span><br>
+						<span *ngIf='!isComputing && bestSolution'> Best Path: {{bestSolution}} </span><br>
+						<span *ngIf='!isComputing && totalTime'> Total Time Taken: {{totalTime}} </span><br>
+						<button *ngIf='isComputing && !abortCompute' mat-raised-button (click)='onMainThreadAbort()'>
+							Abort
+						</button>
 					</div>
 				</div>
 			</div>

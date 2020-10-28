@@ -1,4 +1,5 @@
-import { PathNode } from './web-worker.model';
+import { fn } from '@angular/compiler/src/output/output_ast';
+import { PathNode, RecursionState } from './web-worker.model';
 
 export class ComputeProblemService {
 	problemGraph: number[][];
@@ -9,6 +10,11 @@ export class ComputeProblemService {
 	distanceMatrix: number[][];
 	solutionPath: number[];
 	shortestDistance: number;
+
+	interruptTimeout = 1000;
+	interruptSolutionCount = 5;
+	iteratedSolCount = 0;
+	totalSolutionCount = 0;
 
 	initProblemInstance() {
 		console.log('...init problem');
@@ -118,9 +124,9 @@ export class ComputeProblemService {
 		this.customerNodes.push(3);
 		this.customerNodes.push(4);
 
-		// console.log('graph ', this.problemGraph);
-		// console.log('depots ', this.depotNodes);
-		// console.log('customers ', this.customerNodes);
+		console.log('graph ', this.problemGraph);
+		console.log('depots ', this.depotNodes);
+		console.log('customers ', this.customerNodes);
 	}
 
 	computeTestProblem() {
@@ -206,6 +212,202 @@ export class ComputeProblemService {
 		return { pathNodes: paths[minIndex], pathDistance: finalDistance };
 	}
 
+	computeStatefulTestProblem(recursionState: RecursionState[]) {
+		// simple travelling salesman from each depot and select the min
+
+		// init all
+		const visited: boolean[] = [];
+		const paths: number[][] = [];
+		const customerCount = this.customerNodes.length;
+		const depotCount = this.depotNodes.length;
+		const t1 = new Date().getTime();
+		let ti = 0;
+		let i = 0;
+		this.iteratedSolCount = 0;
+		let interrupt = false;
+		const depth = -1;
+		let finalDistance = -1;
+		let solutionIndex = -1;
+		for (i = 0; i < customerCount; i++) {
+			visited.push(false);
+		}
+		for (i = 0; i < depotCount; i++) {
+			paths.push([]);
+		}
+
+		// check recursion state and init
+		if (!recursionState) {
+			recursionState = [];
+			for (i = 0; i < customerCount + 1; i++) {
+				recursionState.push(null);
+			}
+			this.distanceMatrix = [];
+			this.solutionPath = [];
+			this.shortestDistance = 0;
+			this.totalSolutionCount = 0;
+			this.computeAllDistances();
+			i = 0;
+		} else {
+			finalDistance = recursionState[depth + 1].currentMinDistance;
+			solutionIndex = recursionState[depth + 1].currentMinIndex;
+			paths[solutionIndex] = [...recursionState[depth + 1].currentMinPath];
+			i = recursionState[depth + 1].currentIndex;
+
+			// reset state to null
+			recursionState[depth + 1] = null;
+		}
+
+		// do main process
+		for (; i < depotCount; i++) {
+			const currentPath: PathNode = this.checkStatefulPath(visited, this.depotNodes[i], depth + 1, recursionState, t1);
+
+			// select mins
+			if (finalDistance === -1) {
+				finalDistance = currentPath.pathDistance;
+				paths[i] = [...currentPath.pathNodes];
+				solutionIndex = i;
+			} else if (currentPath.pathDistance < finalDistance) {
+				finalDistance = currentPath.pathDistance;
+				paths[i] = [...currentPath.pathNodes];
+				solutionIndex = i;
+			}
+
+			// construct depot recursion state if time interrupt
+			ti = new Date().getTime();
+			if (this.iteratedSolCount >= this.interruptSolutionCount) {
+				interrupt = true;
+				break;
+			}
+		}
+
+		// make final state before returning
+		recursionState[depth + 1] = {
+			computing: interrupt,
+			currentIndex: i,
+			currentMinIndex: solutionIndex,
+			currentMinPath: [...paths[solutionIndex]],
+			currentSolutionCount: this.totalSolutionCount,
+			currentMinDistance: finalDistance,
+			currentStartTime: t1,
+			lastInterruptTime: interrupt ? ti : null,
+			currentEndTime: ti
+		};
+
+		// test
+		console.log('current state = ', recursionState);
+
+		// final steps after full process
+		if (!interrupt) {
+			this.shortestDistance = finalDistance;
+			this.solutionPath = paths[solutionIndex];
+
+			// remind problem
+			// console.clear();
+			console.log('graph is ', this.problemGraph);
+			console.log('depots are ', this.depotNodes);
+			console.log('customers are ', this.customerNodes);
+			console.log('path is ', this.solutionPath.join('<-'));
+			console.log('shortest distance is ', finalDistance);
+		}
+
+		return [...recursionState];
+	}
+
+	checkStatefulPath(visitedArray: boolean[], selectedNode: number, depth: number, recursionState: RecursionState[], startTime: number) {
+		// init
+		const customerCount = this.customerNodes.length;
+		const paths: number[][] = [];
+		let i = 0;
+		let ti = 0;
+		let interrupt = false;
+		let finalDistance = -1;
+		let minIndex = -1;
+		for (i = 0; i < customerCount; i++) {
+			paths.push([]);
+		}
+
+		// check recursion state
+		if (!recursionState[depth + 1]) {
+			i = 0;
+		} else {
+			finalDistance = recursionState[depth + 1].currentMinDistance;
+			minIndex = recursionState[depth + 1].currentMinIndex;
+			paths[minIndex] = recursionState[depth + 1].currentMinPath;
+
+			i = recursionState[depth + 1].currentIndex;
+
+			// reset state to null
+			recursionState[depth + 1] = null;
+		}
+
+		// do main process
+		for (; i < customerCount; i++) {
+			if (!visitedArray[i]) {
+				const newSelectedNode = this.customerNodes[i];
+				const newVisitedArray = [...visitedArray];
+				newVisitedArray[i] = true;
+				const currentDistance = this.distanceMatrix[selectedNode][newSelectedNode];
+				let reqDistance = 0;
+				if (depth === customerCount - 1) {
+					console.log('depth = ', depth, 'index = ', i, 'last level');
+					reqDistance = currentDistance;
+					paths[i] = [newSelectedNode, selectedNode];
+					this.totalSolutionCount++;
+					this.iteratedSolCount++;
+				} else {
+					console.log('depth = ', depth, 'index = ', i);
+					const currentPath = this.checkStatefulPath(newVisitedArray, newSelectedNode, depth + 1, recursionState, startTime);
+					reqDistance = currentDistance + currentPath.pathDistance;
+					paths[i] = [...currentPath.pathNodes, selectedNode];
+				}
+
+				// select mins
+				if (finalDistance === -1) {
+					finalDistance = reqDistance;
+					minIndex = i;
+				} else if (reqDistance < finalDistance) {
+					finalDistance = reqDistance;
+					minIndex = i;
+				}
+
+				// construct depot recursion state if time interrupt and not lowest level
+				ti = new Date().getTime();
+				if (depth !== customerCount - 1 && this.iteratedSolCount >= this.interruptSolutionCount) {
+					interrupt = true;
+					break;
+				}
+			}
+		}
+
+		// make final state before returning only if interrupted
+		if (interrupt) {
+			recursionState[depth + 1] = {
+				computing: true,
+				currentIndex: i,
+				currentMinIndex: minIndex,
+				currentMinPath: [...paths[minIndex]],
+				currentSolutionCount: this.totalSolutionCount,
+				currentMinDistance: finalDistance,
+				currentStartTime: startTime,
+				lastInterruptTime: ti,
+				currentEndTime: null
+			};
+			// if on highest level of recursion
+			if (depth === 0) {
+				// console.log(this.distanceMatrix, this.distanceMatrix[paths[minIndex][0]][selectedNode]);
+				finalDistance += this.distanceMatrix[paths[minIndex][0]][selectedNode];
+				paths[minIndex].unshift(selectedNode);
+				if (recursionState[depth + 1]) {
+					recursionState[depth + 1].currentMinPath.unshift(selectedNode);
+					recursionState[depth + 1].currentMinDistance = finalDistance;
+				}
+			}
+		}
+
+		// console.log('selected node = ', selectedNode, 'final distance = ', finalDistance, 'depth = ', depth);
+		return { pathNodes: paths[minIndex], pathDistance: finalDistance };
+	}
+
 	computeAllDistances() {
 		// all distances between all nodes
 		const nodeCount = this.problemGraph.length;
@@ -259,7 +461,7 @@ export class ComputeProblemService {
 }
 
 /**
- * The "Vehicle Routing Problem"
+ * The "Vehicle Routing Problem" - CHECK & FIX INTERRUPT PROCESS
  * Simplified to just solve the travelling salesman
  * To be parallelized and speeded up in background
  * The problem progress has to be updated on UI - something like how many solutions found

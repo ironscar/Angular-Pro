@@ -3,7 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 
 import { ComputeProblemService } from './compute-problem.service';
 import * as WebWorkerConstants from './web-worker.constants';
-import { WorkerData } from './web-worker.model';
+import { RecursionState, WorkerData } from './web-worker.model';
 import { BackendApiService } from '../services/backend-api.service';
 import { Subscription } from 'rxjs';
 import { UserRecord } from '../http-pipe/user.interface';
@@ -22,6 +22,11 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 	dynamicCacheProgress = false;
 
 	isComputing = false;
+	abortCompute = false;
+	solutionsChecked: number;
+	bestSolution: string;
+	bestDistance: number;
+	totalTime: number;
 	workers: Worker[] = [];
 
 	constructor(
@@ -131,15 +136,40 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 	}
 
 	onGenerateProblem() {
-		this.computeService.initProblemInstance();
+		this.computeService.initTestProblemInstance();
 	}
 
-	onMainThreadExec() {
-		console.log('main thread used');
-		const t1 = new Date().getTime();
-		const finalDistance = this.computeService.computeTestProblem();
-		const t2 = new Date().getTime();
-		console.log('time taken = ', t2 - t1, 'ms');
+	onMainThreadExec(recursionState?: RecursionState[]) {
+		if (!recursionState) {
+			console.log('main thread used');
+			this.isComputing = true;
+			this.totalTime = new Date().getTime();
+			this.solutionsChecked = 0;
+			this.bestDistance = 0;
+			this.bestSolution = null;
+		}
+		recursionState = this.computeService.computeStatefulTestProblem(recursionState);
+		this.isComputing = recursionState[0].computing && !this.abortCompute;
+		this.solutionsChecked = recursionState[0].currentSolutionCount;
+		this.bestDistance = recursionState[0].currentMinDistance;
+
+		if (this.isComputing) {
+			setTimeout(() => {
+				this.onMainThreadExec(recursionState);
+			}, 100);
+		} else {
+			this.abortCompute = false;
+			this.bestSolution = recursionState[0].currentMinPath.join('<-');
+			this.totalTime = recursionState[0].currentEndTime - this.totalTime;
+			console.log('time taken = ', this.totalTime, 'ms');
+			console.log('computed ', this.solutionsChecked, ' paths');
+		}
+		this.cdr.detectChanges();
+	}
+
+	onMainThreadAbort() {
+		this.abortCompute = true;
+		console.log('abort process');
 	}
 
 	onWebWorkerExec(workerCount: number) {
