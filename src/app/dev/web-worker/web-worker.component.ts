@@ -136,18 +136,22 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 	}
 
 	onGenerateProblem() {
-		this.computeService.initTestProblemInstance();
+		this.computeService.initProblemInstance();
 	}
 
-	onMainThreadExec(recursionState?: RecursionState[]) {
-		if (!recursionState) {
-			console.log('main thread used');
-			this.isComputing = true;
-			this.totalTime = new Date().getTime();
-			this.solutionsChecked = 0;
-			this.bestDistance = 0;
-			this.bestSolution = null;
-		}
+	onMainThreadExec() {
+		console.log('main thread used');
+		this.isComputing = true;
+		this.totalTime = new Date().getTime();
+		this.solutionsChecked = 0;
+		this.bestDistance = 0;
+		this.bestSolution = null;
+		setTimeout(() => {
+			this.onMainThreadExecInternal();
+		}, 100);
+	}
+
+	onMainThreadExecInternal(recursionState?: RecursionState[]) {
 		recursionState = this.computeService.computeStatefulTestProblem(recursionState);
 		this.isComputing = recursionState[0].computing && !this.abortCompute;
 		this.solutionsChecked = recursionState[0].currentSolutionCount;
@@ -155,7 +159,7 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 
 		if (this.isComputing) {
 			setTimeout(() => {
-				this.onMainThreadExec(recursionState);
+				this.onMainThreadExecInternal(recursionState);
 			}, 100);
 		} else {
 			this.abortCompute = false;

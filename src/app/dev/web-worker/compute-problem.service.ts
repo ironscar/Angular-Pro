@@ -11,8 +11,9 @@ export class ComputeProblemService {
 	solutionPath: number[];
 	shortestDistance: number;
 
-	interruptTimeout = 1000;
-	interruptSolutionCount = 5;
+	useTimerInterrupt = true;
+	interruptTimeout = 1500;
+	interruptSolutionCount = 1e6;
 	iteratedSolCount = 0;
 	totalSolutionCount = 0;
 
@@ -274,7 +275,7 @@ export class ComputeProblemService {
 
 			// construct depot recursion state if time interrupt
 			ti = new Date().getTime();
-			if (this.iteratedSolCount >= this.interruptSolutionCount) {
+			if ((this.useTimerInterrupt && ti - t1 > this.interruptTimeout) || this.iteratedSolCount >= this.interruptSolutionCount) {
 				interrupt = true;
 				break;
 			}
@@ -349,13 +350,11 @@ export class ComputeProblemService {
 				const currentDistance = this.distanceMatrix[selectedNode][newSelectedNode];
 				let reqDistance = 0;
 				if (depth === customerCount - 1) {
-					console.log('depth = ', depth, 'index = ', i, 'last level');
 					reqDistance = currentDistance;
 					paths[i] = [newSelectedNode, selectedNode];
 					this.totalSolutionCount++;
 					this.iteratedSolCount++;
 				} else {
-					console.log('depth = ', depth, 'index = ', i);
 					const currentPath = this.checkStatefulPath(newVisitedArray, newSelectedNode, depth + 1, recursionState, startTime);
 					reqDistance = currentDistance + currentPath.pathDistance;
 					paths[i] = [...currentPath.pathNodes, selectedNode];
@@ -372,7 +371,11 @@ export class ComputeProblemService {
 
 				// construct depot recursion state if time interrupt and not lowest level
 				ti = new Date().getTime();
-				if (depth !== customerCount - 1 && this.iteratedSolCount >= this.interruptSolutionCount) {
+				if (
+					depth !== customerCount - 1 &&
+					((this.useTimerInterrupt && ti - startTime > this.interruptTimeout) ||
+						this.iteratedSolCount >= this.interruptSolutionCount)
+				) {
 					interrupt = true;
 					break;
 				}
@@ -461,7 +464,7 @@ export class ComputeProblemService {
 }
 
 /**
- * The "Vehicle Routing Problem" - CHECK & FIX INTERRUPT PROCESS
+ * The "Vehicle Routing Problem"
  * Simplified to just solve the travelling salesman
  * To be parallelized and speeded up in background
  * The problem progress has to be updated on UI - something like how many solutions found
