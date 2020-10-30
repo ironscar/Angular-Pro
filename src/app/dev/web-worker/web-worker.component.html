@@ -100,33 +100,33 @@
 					</mat-card>
 					<mat-card style='margin-top: 16px'>
 						<h3 class='teal-label'> Web worker Stats </h3>
-						<!-- <mat-card-content fxLayout='row'>
+						<mat-card-content fxLayout='row'>
 							<div fxLayout='column' class='number-area'>
-								<div *ngIf='solutionsChecked !== null'>
+								<div *ngIf='workersSolutionsChecked !== null'>
 									<span class='teal-label'> Solutions Checked: </span>
-									{{solutionsChecked}}
+									{{workersSolutionsChecked}}
 								</div>
-								<div *ngIf='bestDistance'>
+								<div *ngIf='workersBestDistance'>
 									<span class='teal-label'> Best Current Distance: </span>
-									{{bestDistance}}
+									{{workersBestDistance}}
 								</div>
-								<div *ngIf='!isComputing && bestSolution'>
+								<div *ngIf='!workersComputing && workersBestSolution'>
 									<span class='teal-label'> Best Path: </span>
-									{{bestSolution}}
+									{{workersBestSolution}}
 								</div>
-								<div *ngIf='!isComputing && totalTime'>
+								<div *ngIf='!workersComputing && workersTotalTime'>
 									<span class='teal-label'> Total Time Taken: </span>
-									{{totalTime}}
+									{{workersTotalTime}}
 								</div>
-								<button style='margin-top: 48px' *ngIf='isComputing && !abortCompute' mat-raised-button
-									(click)='onMainThreadAbort()'>
+								<button style='margin-top: 48px' *ngIf='workersComputing && !workersAborted'
+									mat-raised-button (click)='onWebWorkersAbort()'>
 									Abort
 								</button>
 							</div>
-							<div *ngIf='isComputing' fxLayout='column' class='progress-area'>
+							<div *ngIf='workersComputing' fxLayout='column' class='progress-area'>
 								<mat-spinner></mat-spinner>
 							</div>
-						</mat-card-content> -->
+						</mat-card-content>
 					</mat-card>
 				</div>
 			</div>

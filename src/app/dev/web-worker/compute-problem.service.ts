@@ -1,5 +1,4 @@
-import { fn } from '@angular/compiler/src/output/output_ast';
-import { PathNode, RecursionState } from './web-worker.model';
+import { PathNode, RecursionState, WorkerConsumeData } from './web-worker.model';
 
 export class ComputeProblemService {
 	problemGraph: number[][];
@@ -461,6 +460,40 @@ export class ComputeProblemService {
 		}
 		console.log('distance computed ', this.distanceMatrix);
 	}
+
+	getRequiredWorkerCount(selectedWorkerCount: number, min: number) {
+		let requiredWorkerCount = 0;
+		const workerFactor = (this.depotNodes.length * this.customerNodes.length) / 5;
+		if (workerFactor < selectedWorkerCount) {
+			if (workerFactor <= min) {
+				requiredWorkerCount = min;
+			} else {
+				requiredWorkerCount = workerFactor;
+			}
+		} else {
+			requiredWorkerCount = selectedWorkerCount;
+		}
+		return requiredWorkerCount;
+	}
+
+	consolidateWorkerData(workerCount: number) {
+		const depotCount = this.depotNodes.length;
+		const customerCount = this.customerNodes.length;
+		const workerConsumeData: WorkerConsumeData[][] = [];
+		for (let i = 0; i < workerCount; i++) {
+			workerConsumeData.push([]);
+		}
+		for (let j = 0; j < depotCount; j++) {
+			for (let k = 0; k < customerCount; k++) {
+				const index = (j * customerCount + k) % workerCount;
+				workerConsumeData[index].push({
+					depotIndex: j,
+					firstCustIndex: k
+				});
+			}
+		}
+		return workerConsumeData;
+	}
 }
 
 /**
@@ -469,4 +502,6 @@ export class ComputeProblemService {
  * To be parallelized and speeded up in background
  * The problem progress has to be updated on UI - something like how many solutions found
  * It should be heavy enough to block the main thread but workers can take care of it
+ * getRequiredWorkers is to not create too many workers for too little work and cause overhead
+ * workerConsumeData produces a producer-consumer chain for the workers to read from
  */

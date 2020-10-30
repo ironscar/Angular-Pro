@@ -9,15 +9,34 @@ addEventListener('message', ({ data }) => {
 		case WebWorkerConstants.COMPUTE: {
 			const response: WorkerData = {
 				type: WebWorkerConstants.WORKER_ALERT,
-				payload: 'worker response to ' + workerData.payload
+				payload: {
+					workerIndex: workerData.payload.workerIndex,
+					infoMessage: 'received data to consume'
+				}
 			};
 			postMessageToTarget(response);
+			console.log('worker' + workerData.payload.workerIndex, ' starting process with ', workerData.payload.consumeDataList);
+			break;
+		}
+		case WebWorkerConstants.ABORT: {
+			const response: WorkerData = {
+				type: WebWorkerConstants.WORKER_ALERT,
+				payload: {
+					workerIndex: workerData.payload.workerIndex,
+					infoMessage: 'received abort signal'
+				}
+			};
+			postMessageToTarget(response);
+			console.log('worker aborting process');
 			break;
 		}
 		default: {
 			postMessageToTarget({
 				type: WebWorkerConstants.WORKER_ALERT,
-				payload: 'No such action defined on worker'
+				payload: {
+					workerIndex: workerData.payload.workerIndex,
+					infoMessage: 'No such action defined on worker'
+				}
 			});
 		}
 	}

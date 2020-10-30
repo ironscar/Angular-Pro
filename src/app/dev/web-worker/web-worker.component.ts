@@ -3,7 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 
 import { ComputeProblemService } from './compute-problem.service';
 import * as WebWorkerConstants from './web-worker.constants';
-import { RecursionState, WorkerData } from './web-worker.model';
+import { RecursionState, WorkerConsumeData, WorkerData } from './web-worker.model';
 import { BackendApiService } from '../services/backend-api.service';
 import { Subscription } from 'rxjs';
 import { UserRecord } from '../http-pipe/user.interface';
@@ -21,13 +21,21 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 	errorSubscription: Subscription;
 	dynamicCacheProgress = false;
 
+	problemCreated = false;
+
 	isComputing = false;
 	abortCompute = false;
-	problemCreated = false;
 	solutionsChecked: number = null;
 	bestSolution: string;
 	bestDistance: number;
 	totalTime: number;
+
+	workersComputing = false;
+	workersAborted = false;
+	workersSolutionsChecked: number = null;
+	workersBestSolution: string;
+	workersBestDistance: number;
+	workersTotalTime: number;
 	workers: Worker[] = [];
 
 	constructor(
@@ -141,6 +149,12 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 		this.totalTime = null;
 		this.solutionsChecked = 0;
 		this.bestDistance = null;
+
+		this.workersBestSolution = null;
+		this.workersTotalTime = null;
+		this.workersSolutionsChecked = 0;
+		this.workersBestDistance = null;
+
 		this.problemCreated = true;
 		this.computeService.initProblemInstance();
 	}
@@ -183,36 +197,49 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 	}
 
 	onWebWorkerExec(workerCount: number) {
-		this.isComputing = true;
-		console.log('web workers required = ' + workerCount);
 		if (typeof Worker !== 'undefined') {
-			for (let i = 0; i < workerCount; i++) {
-				this.createWorker();
+			this.onDestroyWorkers();
+			this.workersComputing = true;
+			this.workersTotalTime = new Date().getTime();
+			this.workersSolutionsChecked = 0;
+			this.workersBestDistance = 0;
+			this.workersBestSolution = null;
+
+			// get required number of threads
+			const newWorkerCount = this.computeService.getRequiredWorkerCount(workerCount, 1);
+			console.log('web workers required = ' + newWorkerCount);
+
+			// create producer consumer data chain for each worker thread
+			const workerConsumeData: WorkerConsumeData[][] = this.computeService.consolidateWorkerData(newWorkerCount);
+
+			// create the workers
+			for (let i = 0; i < newWorkerCount; i++) {
+				this.createWorker(i, workerConsumeData[i]);
 			}
 		} else {
 			// Web workers are not supported in this environment.
 			console.log('web workers cannot be created here');
 		}
-		this.isComputing = false;
 	}
 
-	createWorker() {
+	createWorker(index: number, workerConsumeData: WorkerConsumeData[]) {
 		// Create a new worker
 		const worker = new Worker('./app.worker', { type: 'module' });
 		worker.onmessage = ({ data }) => {
 			const workerData: WorkerData = data as WorkerData;
 			switch (workerData.type) {
-				case WebWorkerConstants.COMPUTE_COUNT: {
+				case WebWorkerConstants.COMPUTE_PROGRESS: {
 					// do something
 					break;
 				}
 				case WebWorkerConstants.COMPUTE_END: {
-					// do something
+					// end process
+					this.workersComputing = false;
 					break;
 				}
 				case WebWorkerConstants.WORKER_ALERT: {
 					// do something
-					console.log('ALERT: ' + workerData.payload);
+					console.log('ALERT: ' + workerData.payload.infoMessage);
 					break;
 				}
 				default:
@@ -224,12 +251,32 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 		};
 		this.workers.push(worker);
 
-		// check results
+		// get started
 		const postData: WorkerData = {
 			type: WebWorkerConstants.COMPUTE,
-			payload: 'hello' + this.workers.length
+			payload: {
+				workerIndex: index,
+				consumeDataList: workerConsumeData,
+				startTime: this.totalTime,
+				infoMessage: 'start process'
+			}
 		};
 		worker.postMessage(postData);
+	}
+
+	onWebWorkersAbort() {
+		// abort all workers
+		this.workersAborted = true;
+		this.workers.map((worker, index) => {
+			const postData: WorkerData = {
+				type: WebWorkerConstants.ABORT,
+				payload: {
+					workerIndex: index,
+					infoMessage: 'abort process'
+				}
+			};
+			worker.postMessage(postData);
+		});
 	}
 
 	onDestroyWorkers() {

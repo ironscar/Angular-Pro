@@ -1,6 +1,6 @@
 export interface WorkerData {
 	type: string;
-	payload: any;
+	payload: WorkerInitData;
 }
 
 export interface PathNode {
@@ -18,6 +18,19 @@ export interface RecursionState {
 	currentStartTime: number;
 	lastInterruptTime: number;
 	currentEndTime: number;
+}
+
+export interface WorkerInitData {
+	workerIndex: number;
+	consumeDataList?: WorkerConsumeData[];
+	recursionState?: RecursionState[];
+	startTime?: number;
+	infoMessage: string;
+}
+
+export interface WorkerConsumeData {
+	depotIndex: number;
+	firstCustIndex: number;
 }
 
 /**
