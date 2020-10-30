@@ -25,7 +25,20 @@ export interface WorkerInitData {
 	consumeDataList?: WorkerConsumeData[];
 	recursionState?: RecursionState[];
 	startTime?: number;
+	problemData?: ProblemData;
 	infoMessage: string;
+}
+
+export interface ProblemData {
+	depotNodes: number[];
+	depotVehicles: number[];
+	customerNodes: number[];
+	distanceMatrix: number[][];
+	interruptTimeout: number;
+	useTimerInterrupt: boolean;
+	interruptSolutionCount: number;
+	totalSolutionCount: number;
+	iteratedSolutionCount: number;
 }
 
 export interface WorkerConsumeData {

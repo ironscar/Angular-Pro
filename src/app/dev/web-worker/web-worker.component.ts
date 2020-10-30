@@ -3,10 +3,11 @@ import { isPlatformBrowser } from '@angular/common';
 
 import { ComputeProblemService } from './compute-problem.service';
 import * as WebWorkerConstants from './web-worker.constants';
-import { RecursionState, WorkerConsumeData, WorkerData } from './web-worker.model';
+import { ProblemData, RecursionState, WorkerConsumeData, WorkerData } from './web-worker.model';
 import { BackendApiService } from '../services/backend-api.service';
 import { Subscription } from 'rxjs';
 import { UserRecord } from '../http-pipe/user.interface';
+import { truncateWithEllipsis } from '@amcharts/amcharts4/.internal/core/utils/Utils';
 
 @Component({
 	selector: 'app-web-worker',
@@ -211,10 +212,24 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 
 			// create producer consumer data chain for each worker thread
 			const workerConsumeData: WorkerConsumeData[][] = this.computeService.consolidateWorkerData(newWorkerCount);
+			console.log('worker consume data = ', workerConsumeData);
+
+			// reset and get all other variables like distanceMatrix, SolutionPath etc as one object
+			const problemData: ProblemData = {
+				depotNodes: this.computeService.depotNodes,
+				depotVehicles: this.computeService.depotVehicles,
+				customerNodes: this.computeService.customerNodes,
+				distanceMatrix: this.computeService.computeAllDistances(),
+				interruptTimeout: this.computeService.interruptTimeout,
+				useTimerInterrupt: this.computeService.useTimerInterrupt,
+				interruptSolutionCount: this.computeService.interruptSolutionCount,
+				totalSolutionCount: 0,
+				iteratedSolutionCount: 0
+			};
 
 			// create the workers
 			for (let i = 0; i < newWorkerCount; i++) {
-				this.createWorker(i, workerConsumeData[i]);
+				this.createWorker(i, workerConsumeData[i], problemData);
 			}
 		} else {
 			// Web workers are not supported in this environment.
@@ -222,19 +237,31 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	createWorker(index: number, workerConsumeData: WorkerConsumeData[]) {
+	createWorker(index: number, workerConsumeData: WorkerConsumeData[], problemData: ProblemData) {
 		// Create a new worker
 		const worker = new Worker('./app.worker', { type: 'module' });
 		worker.onmessage = ({ data }) => {
 			const workerData: WorkerData = data as WorkerData;
 			switch (workerData.type) {
 				case WebWorkerConstants.COMPUTE_PROGRESS: {
-					// do something
+					// get progress report and update statistics (HANDLE UNIFICATION OF ALL WORKERS HERE RATHER THAN OVERWRITING)
+					const recursionState = workerData.payload.recursionState;
+					this.workersComputing = recursionState[0].computing && !this.abortCompute;
+					if (this.workersComputing) {
+						this.workersSolutionsChecked = recursionState[0].currentSolutionCount;
+						this.workersBestDistance = recursionState[0].currentMinDistance;
+					}
+					// this.cdr.detectChanges();
 					break;
 				}
 				case WebWorkerConstants.COMPUTE_END: {
 					// end process
+					const recursionState = workerData.payload.recursionState;
 					this.workersComputing = false;
+					this.workersAborted = false;
+					this.workersBestSolution = recursionState[0].currentMinPath.join('<-');
+					this.workersTotalTime = recursionState[0].currentEndTime - this.workersTotalTime;
+					// this.cdr.detectChanges();
 					break;
 				}
 				case WebWorkerConstants.WORKER_ALERT: {
@@ -258,6 +285,7 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 				workerIndex: index,
 				consumeDataList: workerConsumeData,
 				startTime: this.totalTime,
+				problemData,
 				infoMessage: 'start process'
 			}
 		};

@@ -459,6 +459,7 @@ export class ComputeProblemService {
 			this.distanceMatrix.push(distanceRow);
 		}
 		console.log('distance computed ', this.distanceMatrix);
+		return this.distanceMatrix;
 	}
 
 	getRequiredWorkerCount(selectedWorkerCount: number, min: number) {
