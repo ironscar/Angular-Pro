@@ -3,6 +3,9 @@
 import * as WebWorkerConstants from './web-worker.constants';
 import { PathNode, RecursionState, WorkerData, WorkerInitData } from './web-worker.model';
 
+// CHECK IF YOU CAN USE STATE TO CONTROL ABORT
+// let stateCount = 0;
+
 addEventListener('message', ({ data }) => {
 	const workerData: WorkerData = data as WorkerData;
 	switch (workerData.type) {
@@ -51,6 +54,7 @@ function startMultithreadedComputeProcess(dataPayload: WorkerInitData) {
 		payload: {
 			workerIndex: dataPayload.workerIndex,
 			recursionState: dataPayload.recursionState,
+			iteratedSolCount: dataPayload.problemData.iteratedSolutionCount,
 			infoMessage: 'solution progress report'
 		}
 	};
@@ -63,6 +67,7 @@ function startMultithreadedComputeProcess(dataPayload: WorkerInitData) {
 			payload: {
 				workerIndex: dataPayload.workerIndex,
 				recursionState: dataPayload.recursionState,
+				iteratedSolCount: dataPayload.problemData.iteratedSolutionCount,
 				infoMessage: 'final results returned'
 			}
 		};
@@ -119,16 +124,30 @@ function computeStatefulTestProblem(dataPayload: WorkerInitData) {
 		recursionState[depth + 1] = null;
 	}
 
-	// do main process (THIS WILL SLIGHTLY CHANGE WITH COMBO OF DEPOT & FIRST CUSTOMER)
-	for (i = 0; i < depotCount; i++) {
-		const currentPath: PathNode = checkStatefulPath(visited, depotNodes[i], depth + 1, recursionState, t1, dataPayload);
+	// do main process
+	const firstLevelCount = dataPayload.consumeDataList.length;
+	for (i = 0; i < firstLevelCount; i++) {
+		const depot = dataPayload.consumeDataList[i].depotIndex;
+		const customer = dataPayload.consumeDataList[i].firstCustIndex;
+		const newVisitedArray = [...visited];
+		newVisitedArray[customer] = true;
+
+		const currentPath: PathNode = checkStatefulPath(
+			newVisitedArray,
+			customerNodes[customer],
+			depth + 2,
+			recursionState,
+			t1,
+			dataPayload
+		);
+		currentPath.pathNodes.push(customerNodes[customer]);
+		currentPath.pathNodes.push(depotNodes[depot]);
+		currentPath.pathNodes.unshift(depotNodes[depot]);
+		currentPath.pathDistance += dataPayload.problemData.distanceMatrix[depotNodes[depot]][customerNodes[customer]] +=
+			dataPayload.problemData.distanceMatrix[currentPath.pathNodes[0]][depotNodes[depot]];
 
 		// select mins
-		if (finalDistance === -1) {
-			finalDistance = currentPath.pathDistance;
-			paths[i] = [...currentPath.pathNodes];
-			solutionIndex = i;
-		} else if (currentPath.pathDistance < finalDistance) {
+		if (finalDistance === -1 || currentPath.pathDistance < finalDistance) {
 			finalDistance = currentPath.pathDistance;
 			paths[i] = [...currentPath.pathNodes];
 			solutionIndex = i;
@@ -154,9 +173,6 @@ function computeStatefulTestProblem(dataPayload: WorkerInitData) {
 		lastInterruptTime: interrupt ? ti : null,
 		currentEndTime: ti
 	};
-
-	// test
-	console.log('index ' + dataPayload.workerIndex + ' current state = ', recursionState);
 
 	// final steps after full process
 	if (!interrupt) {
@@ -224,10 +240,7 @@ function checkStatefulPath(
 			}
 
 			// select mins
-			if (finalDistance === -1) {
-				finalDistance = reqDistance;
-				minIndex = i;
-			} else if (reqDistance < finalDistance) {
+			if (finalDistance === -1 || reqDistance < finalDistance) {
 				finalDistance = reqDistance;
 				minIndex = i;
 			}
@@ -258,16 +271,6 @@ function checkStatefulPath(
 			lastInterruptTime: ti,
 			currentEndTime: null
 		};
-		// if on highest level of recursion
-		if (depth === 0) {
-			// console.log(this.distanceMatrix, this.distanceMatrix[paths[minIndex][0]][selectedNode]);
-			finalDistance += dataPayload.problemData.distanceMatrix[paths[minIndex][0]][selectedNode];
-			paths[minIndex].unshift(selectedNode);
-			if (recursionState[depth + 1]) {
-				recursionState[depth + 1].currentMinPath.unshift(selectedNode);
-				recursionState[depth + 1].currentMinDistance = finalDistance;
-			}
-		}
 	}
 
 	// console.log('selected node = ', selectedNode, 'final distance = ', finalDistance, 'depth = ', depth);
@@ -282,6 +285,5 @@ function postMessageToTarget(resultData: WorkerData) {
  * added in exclude section of tsconfig.app.json
  * added a tsconfig worker json
  * added tsconfig worker into angular.json
- * FIX THE CODE HERE
- * DEBUG ABORT MECHANISM FOR MULTITHREADED ALGORITHM
+ * DEBUG CODE & CONSTRUCT ABORT MECHANISM FOR MULTITHREADED ALGORITHM
  */

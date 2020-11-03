@@ -209,6 +209,11 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 			this.workersSolutionsChecked = 0;
 			this.workersBestDistance = 0;
 			this.workersBestSolution = null;
+			this.workersComputingList = [];
+			this.workersSolutionsCheckedList = [];
+			this.workersBestSolutionList = [];
+			this.workersBestDistanceList = [];
+			this.workersTotalTimeList = [];
 
 			// get required number of threads
 			const newWorkerCount = this.computeService.getRequiredWorkerCount(workerCount, 1);
@@ -257,6 +262,9 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 					const recursionState = workerData.payload.recursionState;
 					const workerIndex = workerData.payload.workerIndex;
 
+					// test
+					console.log('index ' + workerIndex + ' current state = ', recursionState);
+
 					// worker-specific results
 					this.workersComputingList[workerIndex] = recursionState[0].computing && !this.abortCompute;
 					if (this.workersComputingList[workerIndex]) {
@@ -267,7 +275,7 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 					// aggregate results
 					this.workersComputing = (this.workersComputingList[workerIndex] || this.workersComputing) && !this.abortCompute;
 					if (this.workersComputingList[workerIndex]) {
-						this.workersSolutionsChecked += workerData.payload.problemData.iteratedSolutionCount;
+						this.workersSolutionsChecked += workerData.payload.iteratedSolCount;
 						if (!this.workersBestDistance || this.workersBestDistance > this.workersBestDistanceList[workerIndex]) {
 							this.workersBestDistance = this.workersBestDistanceList[workerIndex];
 						}
@@ -291,7 +299,7 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 					// aggregate result from different workers
 					this.workersAborted = false;
 					this.workersComputing = this.workersComputingList[workerIndex] || this.workersComputing;
-					this.workersSolutionsChecked += workerData.payload.problemData.iteratedSolutionCount;
+					this.workersSolutionsChecked += workerData.payload.iteratedSolCount;
 					if (!this.workersBestDistance || this.workersBestDistance > this.workersBestDistanceList[workerIndex]) {
 						this.workersBestDistance = this.workersBestDistanceList[workerIndex];
 					}

@@ -412,6 +412,7 @@ export class ComputeProblemService {
 
 	computeAllDistances() {
 		// all distances between all nodes
+		this.distanceMatrix = [];
 		const nodeCount = this.problemGraph.length;
 		for (let i = 0; i < nodeCount; i++) {
 			const distanceRow = [];

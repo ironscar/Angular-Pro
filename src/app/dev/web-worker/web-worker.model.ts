@@ -26,6 +26,7 @@ export interface WorkerInitData {
 	recursionState?: RecursionState[];
 	startTime?: number;
 	problemData?: ProblemData;
+	iteratedSolCount?: number;
 	infoMessage: string;
 }
 
