@@ -7,7 +7,6 @@ import { ProblemData, RecursionState, WorkerConsumeData, WorkerData } from './we
 import { BackendApiService } from '../services/backend-api.service';
 import { Subscription } from 'rxjs';
 import { UserRecord } from '../http-pipe/user.interface';
-import { truncateWithEllipsis } from '@amcharts/amcharts4/.internal/core/utils/Utils';
 
 @Component({
 	selector: 'app-web-worker',
@@ -32,11 +31,16 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 	totalTime: number;
 
 	workersComputing = false;
+	workersComputingList: boolean[] = [];
 	workersAborted = false;
 	workersSolutionsChecked: number = null;
+	workersSolutionsCheckedList: number[] = [];
 	workersBestSolution: string;
+	workersBestSolutionList: string[] = [];
 	workersBestDistance: number;
+	workersBestDistanceList: number[] = [];
 	workersTotalTime: number;
+	workersTotalTimeList: number[] = [];
 	workers: Worker[] = [];
 
 	constructor(
@@ -229,6 +233,11 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 
 			// create the workers
 			for (let i = 0; i < newWorkerCount; i++) {
+				this.workersComputingList.push(true);
+				this.workersSolutionsCheckedList.push(0);
+				this.workersBestSolutionList.push(null);
+				this.workersBestDistanceList.push(null);
+				this.workersTotalTimeList.push(this.workersTotalTime);
 				this.createWorker(i, workerConsumeData[i], problemData);
 			}
 		} else {
@@ -244,24 +253,64 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 			const workerData: WorkerData = data as WorkerData;
 			switch (workerData.type) {
 				case WebWorkerConstants.COMPUTE_PROGRESS: {
-					// get progress report and update statistics (HANDLE UNIFICATION OF ALL WORKERS HERE RATHER THAN OVERWRITING)
+					// get progress report and update statistics after aggregating results
 					const recursionState = workerData.payload.recursionState;
-					this.workersComputing = recursionState[0].computing && !this.abortCompute;
-					if (this.workersComputing) {
-						this.workersSolutionsChecked = recursionState[0].currentSolutionCount;
-						this.workersBestDistance = recursionState[0].currentMinDistance;
+					const workerIndex = workerData.payload.workerIndex;
+
+					// worker-specific results
+					this.workersComputingList[workerIndex] = recursionState[0].computing && !this.abortCompute;
+					if (this.workersComputingList[workerIndex]) {
+						this.workersSolutionsCheckedList[workerIndex] = recursionState[0].currentSolutionCount;
+						this.workersBestDistanceList[workerIndex] = recursionState[0].currentMinDistance;
 					}
-					// this.cdr.detectChanges();
+
+					// aggregate results
+					this.workersComputing = (this.workersComputingList[workerIndex] || this.workersComputing) && !this.abortCompute;
+					if (this.workersComputingList[workerIndex]) {
+						this.workersSolutionsChecked += workerData.payload.problemData.iteratedSolutionCount;
+						if (!this.workersBestDistance || this.workersBestDistance > this.workersBestDistanceList[workerIndex]) {
+							this.workersBestDistance = this.workersBestDistanceList[workerIndex];
+						}
+					}
+
+					this.cdr.detectChanges();
 					break;
 				}
 				case WebWorkerConstants.COMPUTE_END: {
 					// end process
 					const recursionState = workerData.payload.recursionState;
-					this.workersComputing = false;
+					const workerIndex = workerData.payload.workerIndex;
+
+					// worker-specific results
+					this.workersComputingList[workerIndex] = false;
+					this.workersSolutionsCheckedList[workerIndex] = recursionState[0].currentSolutionCount;
+					this.workersBestDistanceList[workerIndex] = recursionState[0].currentMinDistance;
+					this.workersBestSolutionList[workerIndex] = workerData.payload.recursionState[0].currentMinPath.join('<-');
+					this.workersTotalTimeList[workerIndex] = new Date().getTime() - this.workersTotalTimeList[workerIndex];
+
+					// aggregate result from different workers
 					this.workersAborted = false;
-					this.workersBestSolution = recursionState[0].currentMinPath.join('<-');
-					this.workersTotalTime = recursionState[0].currentEndTime - this.workersTotalTime;
-					// this.cdr.detectChanges();
+					this.workersComputing = this.workersComputingList[workerIndex] || this.workersComputing;
+					this.workersSolutionsChecked += workerData.payload.problemData.iteratedSolutionCount;
+					if (!this.workersBestDistance || this.workersBestDistance > this.workersBestDistanceList[workerIndex]) {
+						this.workersBestDistance = this.workersBestDistanceList[workerIndex];
+					}
+
+					// aggregate only if all computes done
+					if (!this.workersComputing) {
+						let bestIndexOfAllThreads = 0;
+						let bestSolOfAllThreads = this.workersBestDistanceList[0];
+						for (let i = 1; i < this.workers.length; i++) {
+							if (bestSolOfAllThreads > this.workersBestDistanceList[i]) {
+								bestSolOfAllThreads = this.workersBestDistanceList[i];
+								bestIndexOfAllThreads = i;
+							}
+						}
+						this.workersBestSolution = this.workersBestSolutionList[bestIndexOfAllThreads];
+						this.workersTotalTime = this.workersTotalTimeList[workerIndex];
+					}
+
+					this.cdr.detectChanges();
 					break;
 				}
 				case WebWorkerConstants.WORKER_ALERT: {

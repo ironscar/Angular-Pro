@@ -87,6 +87,7 @@ function computeStatefulTestProblem(dataPayload: WorkerInitData) {
 	const depotCount = depotNodes.length;
 	const t1 = new Date().getTime();
 
+	dataPayload.problemData.iteratedSolutionCount = 0;
 	let recursionState = dataPayload.recursionState;
 	let ti = 0;
 	let i = 0;
@@ -282,4 +283,5 @@ function postMessageToTarget(resultData: WorkerData) {
  * added a tsconfig worker json
  * added tsconfig worker into angular.json
  * FIX THE CODE HERE
+ * DEBUG ABORT MECHANISM FOR MULTITHREADED ALGORITHM
  */
