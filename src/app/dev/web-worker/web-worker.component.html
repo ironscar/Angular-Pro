@@ -122,6 +122,7 @@
 									mat-raised-button (click)='onWebWorkersAbort()'>
 									Abort
 								</button>
+								<span *ngIf='workersAborted && workersComputing'>Collecting results...</span>
 							</div>
 							<div *ngIf='workersComputing' fxLayout='column' class='progress-area'>
 								<mat-spinner></mat-spinner>

@@ -304,7 +304,6 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 					this.workersTotalTimeList[workerIndex] = new Date().getTime() - this.workersTotalTimeList[workerIndex];
 
 					// aggregate result from different workers
-					this.workersAborted = false;
 					let newComputing = false;
 					for (const computing of this.workersComputingList) {
 						if (computing) {
@@ -320,6 +319,7 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 
 					// aggregate only if all computes done
 					if (!this.workersComputing) {
+						this.workersAborted = false;
 						let bestIndexOfAllThreads = 0;
 						let bestSolOfAllThreads = this.workersBestDistanceList[0];
 						for (let i = 1; i < this.workers.length; i++) {
