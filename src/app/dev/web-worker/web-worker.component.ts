@@ -262,9 +262,6 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 					const recursionState = workerData.payload.recursionState;
 					const workerIndex = workerData.payload.workerIndex;
 
-					// test
-					console.log('index ' + workerIndex + ' current state = ', recursionState);
-
 					// worker-specific results
 					this.workersComputingList[workerIndex] = recursionState[0].computing && !this.abortCompute;
 					if (this.workersComputingList[workerIndex]) {
@@ -273,13 +270,23 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 					}
 
 					// aggregate results
-					this.workersComputing = (this.workersComputingList[workerIndex] || this.workersComputing) && !this.abortCompute;
+					let newComputing = false;
+					for (const computing of this.workersComputingList) {
+						if (computing) {
+							newComputing = true;
+							break;
+						}
+					}
+					this.workersComputing = newComputing && !this.abortCompute;
 					if (this.workersComputingList[workerIndex]) {
 						this.workersSolutionsChecked += workerData.payload.iteratedSolCount;
 						if (!this.workersBestDistance || this.workersBestDistance > this.workersBestDistanceList[workerIndex]) {
 							this.workersBestDistance = this.workersBestDistanceList[workerIndex];
 						}
 					}
+
+					// test
+					console.log('worker ' + workerIndex + ' PROGRESS: current state = ', recursionState, this.workersComputing);
 
 					this.cdr.detectChanges();
 					break;
@@ -298,7 +305,14 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 
 					// aggregate result from different workers
 					this.workersAborted = false;
-					this.workersComputing = this.workersComputingList[workerIndex] || this.workersComputing;
+					let newComputing = false;
+					for (const computing of this.workersComputingList) {
+						if (computing) {
+							newComputing = true;
+							break;
+						}
+					}
+					this.workersComputing = newComputing;
 					this.workersSolutionsChecked += workerData.payload.iteratedSolCount;
 					if (!this.workersBestDistance || this.workersBestDistance > this.workersBestDistanceList[workerIndex]) {
 						this.workersBestDistance = this.workersBestDistanceList[workerIndex];
@@ -318,12 +332,15 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 						this.workersTotalTime = this.workersTotalTimeList[workerIndex];
 					}
 
+					// test
+					console.log('worker ' + workerIndex + ' END: current state = ', recursionState, this.workersComputing);
+
 					this.cdr.detectChanges();
 					break;
 				}
 				case WebWorkerConstants.WORKER_ALERT: {
 					// do something
-					console.log('ALERT: ' + workerData.payload.infoMessage);
+					console.log('worker ' + workerData.payload.workerIndex + ' ALERT: ' + workerData.payload.infoMessage);
 					break;
 				}
 				default:

@@ -89,7 +89,6 @@ function computeStatefulTestProblem(dataPayload: WorkerInitData) {
 	const visited: boolean[] = [];
 	const paths: number[][] = [];
 	const customerCount = customerNodes.length;
-	const depotCount = depotNodes.length;
 	const t1 = new Date().getTime();
 
 	dataPayload.problemData.iteratedSolutionCount = 0;
@@ -100,10 +99,11 @@ function computeStatefulTestProblem(dataPayload: WorkerInitData) {
 	const depth = -1;
 	let finalDistance = -1;
 	let solutionIndex = -1;
+	const firstLevelCount = dataPayload.consumeDataList.length;
 	for (i = 0; i < customerCount; i++) {
 		visited.push(false);
 	}
-	for (i = 0; i < depotCount; i++) {
+	for (i = 0; i < firstLevelCount; i++) {
 		paths.push([]);
 	}
 
@@ -125,12 +125,14 @@ function computeStatefulTestProblem(dataPayload: WorkerInitData) {
 	}
 
 	// do main process
-	const firstLevelCount = dataPayload.consumeDataList.length;
-	for (i = 0; i < firstLevelCount; i++) {
+
+	for (; i < firstLevelCount; i++) {
 		const depot = dataPayload.consumeDataList[i].depotIndex;
 		const customer = dataPayload.consumeDataList[i].firstCustIndex;
 		const newVisitedArray = [...visited];
 		newVisitedArray[customer] = true;
+
+		// console.log('depot = ', depotNodes[depot], 'selectedNode = ', customerNodes[customer], 'depth = ', depth);
 
 		const currentPath: PathNode = checkStatefulPath(
 			newVisitedArray,
@@ -140,10 +142,10 @@ function computeStatefulTestProblem(dataPayload: WorkerInitData) {
 			t1,
 			dataPayload
 		);
-		currentPath.pathNodes.push(customerNodes[customer]);
 		currentPath.pathNodes.push(depotNodes[depot]);
 		currentPath.pathNodes.unshift(depotNodes[depot]);
-		currentPath.pathDistance += dataPayload.problemData.distanceMatrix[depotNodes[depot]][customerNodes[customer]] +=
+		currentPath.pathDistance +=
+			dataPayload.problemData.distanceMatrix[depotNodes[depot]][customerNodes[customer]] +
 			dataPayload.problemData.distanceMatrix[currentPath.pathNodes[0]][depotNodes[depot]];
 
 		// select mins
@@ -161,6 +163,8 @@ function computeStatefulTestProblem(dataPayload: WorkerInitData) {
 		}
 	}
 
+	// console.log('interrupt', interrupt);
+
 	// make final state before returning
 	recursionState[depth + 1] = {
 		computing: interrupt,
@@ -173,12 +177,6 @@ function computeStatefulTestProblem(dataPayload: WorkerInitData) {
 		lastInterruptTime: interrupt ? ti : null,
 		currentEndTime: ti
 	};
-
-	// final steps after full process
-	if (!interrupt) {
-		this.shortestDistance = finalDistance;
-		this.solutionPath = paths[solutionIndex];
-	}
 
 	dataPayload.recursionState = [...recursionState];
 }
@@ -224,6 +222,9 @@ function checkStatefulPath(
 	for (; i < customerCount; i++) {
 		if (!visitedArray[i]) {
 			const newSelectedNode = dataPayload.problemData.customerNodes[i];
+
+			// console.log('SelectedNode = ', selectedNode, 'newSelectedNode = ', newSelectedNode, 'depth = ', depth);
+
 			const newVisitedArray = [...visitedArray];
 			newVisitedArray[i] = true;
 			const currentDistance = dataPayload.problemData.distanceMatrix[selectedNode][newSelectedNode];
@@ -273,7 +274,6 @@ function checkStatefulPath(
 		};
 	}
 
-	// console.log('selected node = ', selectedNode, 'final distance = ', finalDistance, 'depth = ', depth);
 	return { pathNodes: paths[minIndex], pathDistance: finalDistance };
 }
 
@@ -285,5 +285,5 @@ function postMessageToTarget(resultData: WorkerData) {
  * added in exclude section of tsconfig.app.json
  * added a tsconfig worker json
  * added tsconfig worker into angular.json
- * DEBUG CODE & CONSTRUCT ABORT MECHANISM FOR MULTITHREADED ALGORITHM
+ * CONSTRUCT ABORT MECHANISM FOR MULTITHREADED ALGORITHM
  */
