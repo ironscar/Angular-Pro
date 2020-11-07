@@ -171,9 +171,19 @@ export class WebWorkerComponent implements OnInit, OnDestroy {
 		this.solutionsChecked = 0;
 		this.bestDistance = 0;
 		this.bestSolution = null;
-		setTimeout(() => {
-			this.onMainThreadExecInternal();
-		}, 100);
+		const noInterrupt = true;
+		if (noInterrupt) {
+			this.bestDistance = this.computeService.computeTestProblem();
+			this.bestSolution = this.computeService.solutionPath.join('<-');
+			this.solutionsChecked = 119e6;
+			this.totalTime = new Date().getTime() - this.totalTime;
+			this.isComputing = false;
+			this.cdr.detectChanges();
+		} else {
+			setTimeout(() => {
+				this.onMainThreadExecInternal();
+			}, 100);
+		}
 	}
 
 	onMainThreadExecInternal(recursionState?: RecursionState[]) {

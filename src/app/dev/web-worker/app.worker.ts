@@ -3,7 +3,6 @@
 import * as WebWorkerConstants from './web-worker.constants';
 import { PathNode, RecursionState, WorkerData, WorkerInitData } from './web-worker.model';
 
-// CHECK IF YOU CAN USE STATE TO CONTROL ABORT
 let processAborted = false;
 
 addEventListener('message', ({ data }) => {
@@ -76,7 +75,7 @@ function startMultithreadedComputeProcess(dataPayload: WorkerInitData) {
 	} else {
 		setTimeout(() => {
 			startMultithreadedComputeProcess(dataPayload);
-		}, 100);
+		}, 50);
 	}
 }
 
@@ -288,6 +287,4 @@ function postMessageToTarget(resultData: WorkerData) {
  * added in exclude section of tsconfig.app.json
  * added a tsconfig worker json
  * added tsconfig worker into angular.json
- * CONSTRUCT ABORT MECHANISM FOR MULTITHREADED ALGORITHM
- * CHECK HOW MUCH YOU CAN DECREASE THE TIMEOUT ON BOTH MAIN & WORKERS
  */
